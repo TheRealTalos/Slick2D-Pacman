@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Slick2D</name>
+			<type>2</type>
+			<location>C:/Users/macdonaldz/Desktop/Programming/Libraries/Slick2D</location>
+		</link>
+	</linkedResources>
 </projectDescription>

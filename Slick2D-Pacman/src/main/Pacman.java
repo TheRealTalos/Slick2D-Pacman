@@ -8,19 +8,16 @@ import org.newdawn.slick.tiled.TiledMap;
 public class Pacman extends BasicGame{
 	
 	//MAKE SCALABLE GAME
-	//MAKE SPRITESHEET WORK
-	//ADD PLAYER CLASS
 	//MESS WITH SETTINGS
 	
 	private TiledMap map;
-	private Animation pacMan, pacAnimUp, pacAnimDown, pacAnimRight, pacAnimLeft;
+	private Player player = new Player();
+	
+	private static SpriteSheet sheet;
 	
 	private static final int WORLDSIZE = 336;
 	private static final int TILESIZE = 16;
 	private static final int SCALE = 2;
-	
-	private float x = 10*TILESIZE;
-	private float y = 15*TILESIZE;
 	
 	public Pacman() {
 		super("Pacman");
@@ -45,50 +42,37 @@ public class Pacman extends BasicGame{
 		
 		map = new TiledMap("res/maps/map.tmx");
 		
-		Image[] pacImageUp = {new Image("res/sprites/PacUp1.png"), new Image("res/sprites/PacUp2.png")};
-		Image[] pacImageDown = {new Image("res/sprites/PacDown1.png"), new Image("res/sprites/PacDown2.png")};
-		Image[] pacImageRight = {new Image("res/sprites/PacRight1.png"), new Image("res/sprites/PacRight2.png")};
-		Image[] pacImageLeft = {new Image("res/sprites/PacLeft1.png"), new Image("res/sprites/PacLeft2.png")};
+		sheet = new SpriteSheet(new Image("res/spritesheets/SpriteSheet.png"), TILESIZE, TILESIZE);
 		
-		pacAnimUp = new Animation(pacImageUp, 100, false);
-		pacAnimDown = new Animation(pacImageDown, 100, false);
-		pacAnimLeft = new Animation(pacImageLeft, 100, false);
-		pacAnimRight = new Animation(pacImageRight, 100, false);
+		player.init();
 		
-		pacMan = pacAnimRight;
 	}
 	
 	@Override
 	public void render(GameContainer arg0, Graphics arg1) throws SlickException {
 		
 		map.render(0, 0);
-		pacMan.draw(x, y);
+		player.render();
 		
 	}
 
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
 		
-		Input input = container.getInput();
-		if (input.isKeyDown(Input.KEY_UP)){
-			pacMan = pacAnimUp;
-			pacMan.update(delta);
-			y -= delta * 0.1f;
-			
-		}else if (input.isKeyDown(Input.KEY_DOWN)){
-			pacMan = pacAnimDown;
-			pacMan.update(delta);
-			y += delta * 0.1f;
-			
-		}else if (input.isKeyDown(Input.KEY_LEFT)){
-			pacMan = pacAnimLeft;
-			pacMan.update(delta);
-			x -= delta * 0.1f;
-			
-		}else if (input.isKeyDown(Input.KEY_RIGHT)){
-			pacMan = pacAnimRight;
-			pacMan.update(delta);
-			x += delta * 0.1f;
-		}
+		player.update(container, delta);
+		
 	}
+	
+	public static SpriteSheet getSheet() {
+		return sheet;
+	}
+	
+	public static int getWorldsize() {
+		return WORLDSIZE;
+	}
+
+	public static int getTilesize() {
+		return TILESIZE;
+	}
+	
 }
