@@ -1,5 +1,8 @@
 package main;
 
+import java.awt.Rectangle;
+import java.util.ArrayList;
+
 import org.newdawn.slick.*;
 import org.newdawn.slick.tiled.TiledMap;
 
@@ -18,6 +21,10 @@ public class Pacman extends BasicGame{
 	private static final int WORLDSIZE = 336;
 	private static final int TILESIZE = 16;
 	private static final int SCALE = 2;
+	
+	private static Boolean[][] isWall = new Boolean[TILESIZE][TILESIZE];
+	
+	public static Rectangle[] walls = new Rectangle[TILESIZE];
 	
 	public Pacman() {
 		super("Pacman");
@@ -45,6 +52,14 @@ public class Pacman extends BasicGame{
 		
 		player.init();
 		
+		int k = 0;
+		
+		for (int i = 0; i < 3; i++){
+			if (map.getTileProperty(map.getTileId(i, 0, 0), "Wall", "nope").equals("true")){
+				walls[i] = new Rectangle(i * TILESIZE, i * TILESIZE, TILESIZE, TILESIZE);
+				i++;
+			}
+		}
 	}
 
 	@Override
@@ -63,6 +78,9 @@ public class Pacman extends BasicGame{
 		
 		player.update(container, delta);
 		
+		if (player.getPacBox().getBounds().intersects(walls[1])){
+			
+		}
 	}
 	
 	public static SpriteSheet getSheet() {
@@ -80,5 +98,4 @@ public class Pacman extends BasicGame{
 	public static TiledMap getMap() {
 		return map;
 	}
-	
 }

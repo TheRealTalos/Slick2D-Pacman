@@ -1,13 +1,19 @@
 package main;
 
+import java.awt.Rectangle;
+
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Transform;
 
 public class Player {
 	
 	private Animation pacMan, pacAnimUp, pacAnimDown, pacAnimLeft, pacAnimRight;
+	
+	private Rectangle colBox;
 	
 	private float x = 10*Pacman.getTilesize();
 	private float y = 15*Pacman.getTilesize();
@@ -36,24 +42,23 @@ public class Player {
 		pacAnimDown = new Animation(pacImageDown, 50, false);
 		pacAnimLeft = new Animation(pacImageLeft, 50, false);
 		pacAnimRight = new Animation(pacImageRight, 50, false);
-		
+				
 		pacMan = pacAnimRight;
+		
+		colBox = new Rectangle(Pacman.getTilesize(), Pacman.getTilesize());
 		
 	}
 	
 	public void render(){
 		
 		pacMan.draw(x, y);
+		colBox.setLocation((int)x, (int)y);;
 		
 	}
 	
-	public void update(GameContainer container, int delta){
-		
+	public void update(GameContainer container, int delta){	
 		Input input = container.getInput();
-		
-		//if (!hitWall)
-		
-		
+
 		if (input.isKeyDown(Input.KEY_UP) || input.isKeyDown(Input.KEY_W)){
 			moving = true;
 			dir = UP;
@@ -69,30 +74,58 @@ public class Player {
 		}else if (input.isKeyDown(Input.KEY_RIGHT) || input.isKeyDown(Input.KEY_D)){
 			moving = true;
 			dir = RIGHT;
-	
+
 		}
-		
+			
 		if (x > 336) x = 0 - Pacman.getTilesize()/2;
 		if (x < 0 - Pacman.getTilesize()/2) x = 336;
+		
+		int dx = 0; 
+		int dy = 0;
 		
 		if (moving){
 			if (dir == UP) {
 				pacMan = pacAnimUp;
 				pacMan.update(delta);
-				y -= delta * 0.1f;
+				dy -= delta * 0.1f;
 			}else if (dir == DOWN) {
 				pacMan = pacAnimDown;
 				pacMan.update(delta);
-				y += delta * 0.1f;
+				dy += delta * 0.1f;
 			}else if (dir == LEFT) {
 				pacMan = pacAnimLeft;
 				pacMan.update(delta);
-				x -= delta * 0.1f;
+				dx -= delta * 0.1f;
 			}else if (dir == RIGHT) {
 				pacMan = pacAnimRight;
 				pacMan.update(delta);
-				x += delta * 0.1f;
+				dx += delta * 0.1f;
 			}
 		}
+		
+		Rectangle tempColBox = new Rectangle((int)x + dx, (int)y + dy, Pacman.getTilesize(), Pacman.getTilesize());
+		
+		if (!tempColBox.intersects(Pacman.walls[1])){
+			x += dx;
+			y += dy;
+		} else{
+			moving = false;
+		}
+		
+		colBox.setLocation((int)x, (int)y);
+		
 	}
+	
+	public Rectangle getPacBox(){
+		return colBox;
+	}
+	
+	public double getPacBoxX(){
+		return colBox.getMinX();
+	}
+	
+	public double getPacBoxY(){
+		return colBox.getMinY();
+	}
+	
 }
