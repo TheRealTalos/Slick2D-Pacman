@@ -2,13 +2,34 @@
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="21" height="21" tilewidth="16" tileheight="16" nextobjectid="1">
  <tileset firstgid="1" name="Blue" tilewidth="16" tileheight="16" tilecount="1" columns="1">
   <image source="../tiles/Blue.png" width="16" height="16"/>
+  <tile id="0">
+   <properties>
+    <property name="Wall" type="bool" value="true"/>
+   </properties>
+  </tile>
  </tileset>
  <tileset firstgid="2" name="Grey" tilewidth="16" tileheight="16" tilecount="1" columns="1">
   <image source="../tiles/Grey.png" width="16" height="16"/>
+  <tile id="0">
+   <properties>
+    <property name="Semi-Wall" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="3" name="Black" tilewidth="16" tileheight="16" tilecount="1" columns="1">
+  <image source="../tiles/Black.png" width="16" height="16"/>
+ </tileset>
+ <tileset firstgid="4" name="SpriteSheet" tilewidth="16" tileheight="16" tilecount="340" columns="20">
+  <image source="../spritesheets/SpriteSheet.png" width="320" height="280"/>
+  <tile id="20">
+   <properties>
+    <property name="dot" type="bool" value="true"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="Tile Layer 1" width="21" height="21">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC7WUUQrAIAxD293/0GMfAwlJTakGZDqjfWR0ERF5cPxa50pdTy5PnKfwqDMdBkcOJ3JV+w4nvtut2Z0qJzdP/O6s1i7jyufm9RjcFSvjUWt1xuHs7jOOSZ6s1oQTazpcrud2v3d7v7qH8SCX46vYTvS7YnK4d3lOVP2XJuPTCzjUR4PkBgAA
+   H4sIAAAAAAAAC9WUUQrAMAhDdV5i9z/pKOxjSNQ41499BFpbwiPWmojoh7Jba30WYu94TwVrdZ6oronnVAyn58rOGU5fq/bIM8qJzdP33QTnwLwD5MPmdTTzZnvZecsMZ+d8R55Z399w/nneIx4j+NEceR42z+e93fMeMTHcVZ4TZf/SRMvvArsnY+7kBgAA
   </data>
  </layer>
 </map>

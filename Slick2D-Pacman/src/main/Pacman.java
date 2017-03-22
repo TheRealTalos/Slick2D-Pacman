@@ -1,7 +1,5 @@
 package main;
 
-import java.awt.Container;
-
 import org.newdawn.slick.*;
 import org.newdawn.slick.tiled.TiledMap;
 
@@ -9,9 +7,11 @@ public class Pacman extends BasicGame{
 	
 	//MAKE SCALABLE GAME
 	//MESS WITH SETTINGS
+	//ADD COLLISION
 	
-	private TiledMap map;
+	private static TiledMap map;
 	private Player player = new Player();
+	private Dots dots = new Dots();
 	
 	private static SpriteSheet sheet;
 	
@@ -21,7 +21,6 @@ public class Pacman extends BasicGame{
 	
 	public Pacman() {
 		super("Pacman");
-			
 	}
 	
 	public static void main(String[] args){
@@ -47,11 +46,14 @@ public class Pacman extends BasicGame{
 		player.init();
 		
 	}
-	
+
 	@Override
 	public void render(GameContainer arg0, Graphics arg1) throws SlickException {
 		
+		dots.render();
+		
 		map.render(0, 0);
+		
 		player.render();
 		
 	}
@@ -73,6 +75,10 @@ public class Pacman extends BasicGame{
 
 	public static int getTilesize() {
 		return TILESIZE;
+	}
+	
+	public static TiledMap getMap() {
+		return map;
 	}
 	
 }

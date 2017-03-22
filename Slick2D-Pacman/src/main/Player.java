@@ -69,7 +69,7 @@ public class Player {
 		}else if (input.isKeyDown(Input.KEY_RIGHT) || input.isKeyDown(Input.KEY_D)){
 			moving = true;
 			dir = RIGHT;
-			
+	
 		}
 		
 		if (x > 336) x = 0 - Pacman.getTilesize()/2;
@@ -94,7 +94,5 @@ public class Player {
 				x += delta * 0.1f;
 			}
 		}
-		
 	}
-	
 }
