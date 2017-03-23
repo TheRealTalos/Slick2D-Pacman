@@ -1,30 +1,45 @@
 package main;
 
-import org.newdawn.slick.Animation;
+import java.awt.Rectangle;
+
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 public class Dots {
 	
-	private Image dot;
-	
+	public static Image[][] dots = new Image[Pacman.getWorldsize()][Pacman.getWorldsize()];
+	public static Rectangle[][] dotsRec = new Rectangle[Pacman.getWorldsize()][Pacman.getWorldsize()];
+
 	public Dots(){
 		
 	}
 	
-	public void render(){
-		
-//		try {
-//			dot = new Image("res/sprites/dot.png");
-//		} catch (SlickException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		for (int i = 0; i < Pacman.getWorldsize() / Pacman.getTilesize(); i++){
-//			for (int j = 0; j < Pacman.getWorldsize() / Pacman.getTilesize(); j++){
-//				Pacman.getSheet().getSprite(0, 1).draw(i * Pacman.getTilesize(), j * Pacman.getTilesize());
-//			}
-//		}
-		
+	public void init(){
+		for (int x = 0; x < Pacman.getWorldsize() / Pacman.getTilesize(); x++){
+			for (int y = 0; y < Pacman.getWorldsize() / Pacman.getTilesize(); y++){
+				dots[x][y] = Pacman.getSheet().getSprite(0, 1);
+				dotsRec[x][y] = new Rectangle(x, y, Pacman.getTilesize(), Pacman.getTilesize());
+			}
+		}
 	}
+	
+	public void render(){
+		for (int x = 0; x < Pacman.getWorldsize() / Pacman.getTilesize(); x++){
+			for (int y = 0; y < Pacman.getWorldsize() / Pacman.getTilesize(); y++){
+				if (dots[x][y] != null) dots[x][y].draw(x * Pacman.getTilesize(), y * Pacman.getTilesize());
+			}
+		}
+	}
+	
+	public void update(){
+		for (int x = 0; x < Pacman.getWorldsize() / Pacman.getTilesize(); x++){
+			for (int y = 0; y < Pacman.getWorldsize() / Pacman.getTilesize(); y++){
+				if (Pacman.getPlayer().getPacBox().intersects(dotsRec[x][y])){
+					System.out.println("manlymen");
+					dots[x][y] = null;
+				}
+			}
+		}
+	}
+	
 }

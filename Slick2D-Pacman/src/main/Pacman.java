@@ -10,10 +10,11 @@ public class Pacman extends BasicGame{
 	
 	//MAKE SCALABLE GAME
 	//MESS WITH SETTINGS
-	//ADD COLLISION
+	//ADD DOT COLLISION
+	//ADD PROPER MOVEMENT
 	
 	private static TiledMap map;
-	private Player player = new Player();
+	private static Player player = new Player();
 	private Dots dots = new Dots();
 	
 	private static SpriteSheet sheet;
@@ -22,9 +23,7 @@ public class Pacman extends BasicGame{
 	private static final int TILESIZE = 16;
 	private static final int SCALE = 2;
 	
-	private static Boolean[][] isWall = new Boolean[TILESIZE][TILESIZE];
-	
-	public static Rectangle[] walls = new Rectangle[TILESIZE];
+	public static Rectangle[] walls = new Rectangle[202];
 	
 	public Pacman() {
 		super("Pacman");
@@ -35,6 +34,7 @@ public class Pacman extends BasicGame{
 			
 			AppGameContainer app = new AppGameContainer(new Pacman());
 			app.setDisplayMode(WORLDSIZE, WORLDSIZE, false);
+			app.setTargetFrameRate(60);
 			app.start();
 			
 		}catch(SlickException e){
@@ -52,12 +52,16 @@ public class Pacman extends BasicGame{
 		
 		player.init();
 		
-		int k = 0;
+		dots.init();
 		
-		for (int i = 0; i < 3; i++){
-			if (map.getTileProperty(map.getTileId(i, 0, 0), "Wall", "nope").equals("true")){
-				walls[i] = new Rectangle(i * TILESIZE, i * TILESIZE, TILESIZE, TILESIZE);
-				i++;
+		int w = 0;
+		
+		for (int y = 0; y < WORLDSIZE/TILESIZE; y++){
+			for (int x = 0; x < WORLDSIZE/TILESIZE; x++){
+				if (map.getTileProperty(map.getTileId(x, y, 0), "Wall", "nope").equals("true")){
+					walls[w] = new Rectangle(x * TILESIZE, y * TILESIZE, TILESIZE, TILESIZE);
+					w++;
+				}
 			}
 		}
 	}
@@ -66,9 +70,7 @@ public class Pacman extends BasicGame{
 	public void render(GameContainer arg0, Graphics arg1) throws SlickException {
 		
 		dots.render();
-		
 		map.render(0, 0);
-		
 		player.render();
 		
 	}
@@ -77,10 +79,8 @@ public class Pacman extends BasicGame{
 	public void update(GameContainer container, int delta) throws SlickException {
 		
 		player.update(container, delta);
+		dots.update();
 		
-		if (player.getPacBox().getBounds().intersects(walls[1])){
-			
-		}
 	}
 	
 	public static SpriteSheet getSheet() {
@@ -97,5 +97,9 @@ public class Pacman extends BasicGame{
 	
 	public static TiledMap getMap() {
 		return map;
+	}
+	
+	public static Player getPlayer(){
+		return player;
 	}
 }

@@ -21,6 +21,8 @@ public class Player {
 	private int dir = 0;
 	private boolean moving = false;
 	
+	private static final float SPEED = 0.1f;
+	
 	private static final int UP = 0;
 	private static final int DOWN = 1;
 	private static final int LEFT = 2;
@@ -87,32 +89,48 @@ public class Player {
 			if (dir == UP) {
 				pacMan = pacAnimUp;
 				pacMan.update(delta);
-				dy -= delta * 0.1f;
+				dy -= delta * SPEED;
 			}else if (dir == DOWN) {
 				pacMan = pacAnimDown;
 				pacMan.update(delta);
-				dy += delta * 0.1f;
+				dy += delta * SPEED;
 			}else if (dir == LEFT) {
 				pacMan = pacAnimLeft;
 				pacMan.update(delta);
-				dx -= delta * 0.1f;
+				dx -= delta * SPEED;
 			}else if (dir == RIGHT) {
 				pacMan = pacAnimRight;
 				pacMan.update(delta);
-				dx += delta * 0.1f;
+				dx += delta * SPEED;
 			}
 		}
 		
 		Rectangle tempColBox = new Rectangle((int)x + dx, (int)y + dy, Pacman.getTilesize(), Pacman.getTilesize());
 		
-		if (!tempColBox.intersects(Pacman.walls[1])){
+		boolean m = false;
+		
+		for (int i = 0; i < Pacman.walls.length; i++){
+			if (tempColBox.intersects(Pacman.walls[i])){
+				moving = false;
+				m = true;
+			}
+		}
+		
+		if (!m){
 			x += dx;
 			y += dy;
-		} else{
-			moving = false;
 		}
 		
 		colBox.setLocation((int)x, (int)y);
+		
+//		for (int x = 0; x < Pacman.getWorldsize() / Pacman.getTilesize(); x++){
+//			for (int y = 0; y < Pacman.getWorldsize() / Pacman.getTilesize(); y++){
+//				if (colBox.intersects(Dots.dotsRec[x][y])){
+//					System.out.println("manlymen");
+//					Dots.dots[x][y] = null;
+//				}
+//			}
+//		}
 		
 	}
 	
