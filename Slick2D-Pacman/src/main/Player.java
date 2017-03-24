@@ -19,7 +19,8 @@ public class Player {
 	private float y = 15*Pacman.getTilesize();
 	
 	private int dir = 4;
-	private int lastStuck = 4;
+	private int lastDir = 4;
+	private int nextDir = 4;
 	private boolean moving, mUp, mDown, mLeft, mRight = false;
 	
 	private static final float SPEED = 0.07f;
@@ -77,54 +78,91 @@ public class Player {
 		float dy = y;
 		
 		if (input.isKeyPressed(input.KEY_UP)){
-			
 			dir = UP;
+			nextDir = 4;
 			
 		}else if (input.isKeyPressed(input.KEY_DOWN)){
-			
 			dir = DOWN;
+			nextDir = 4;
 			
 		}else if (input.isKeyPressed(input.KEY_LEFT)){
-			
 			dir = LEFT;
+			nextDir = 4;
 			
 		}else if (input.isKeyPressed(input.KEY_RIGHT)){
-			
 			dir = RIGHT;
+			nextDir = 4;
 			
 		}
 		
 		if (dir == UP){
 			dy -= delta * SPEED;
 			if (!isIntersecting(UP, dx, dy)){
-				y += dy;
+				y -= delta * SPEED;
 				pacMan = pacAnimUp;
 			}else{
 				pacMan = pacAnimIdleUp;
+				dir = lastDir;
+				nextDir = UP;
 			}
 		}else if (dir == DOWN){
 			dy += delta * SPEED;
 			if (!isIntersecting(DOWN, dx, dy)){
-				y += dy;
+				y += delta * SPEED;
 				pacMan = pacAnimDown;
 			}else{
 				pacMan = pacAnimIdleDown;
+				dir = lastDir;
+				nextDir = DOWN;
 			}
 		}else if (dir == LEFT){
 			dx -= delta * SPEED;
 			if (!isIntersecting(LEFT, dx, dy)){
-				x += dx;
+				x -= delta * SPEED;
 				pacMan = pacAnimLeft;
 			}else{
 				pacMan = pacAnimIdleLeft;
+				dir = lastDir;
+				nextDir = LEFT;
 			}
 		}else if (dir == RIGHT){
 			dx += delta * SPEED;
 			if (!isIntersecting(RIGHT, dx, dy)){
-				x += dx;
+				x += delta * SPEED;
 				pacMan = pacAnimRight;
 			}else{
 				pacMan = pacAnimIdleRight;
+				dir = lastDir;
+				nextDir = RIGHT;
+			}
+		}
+		
+		float ndx = x;
+		float ndy = y;
+		
+		if (nextDir == UP){
+			ndy -= delta * SPEED;
+			if (!isIntersecting(UP, ndx, ndy)){
+				dir = UP;
+				nextDir = 4;
+			}
+		}else if (nextDir == DOWN){
+			ndy += delta * SPEED;
+			if (!isIntersecting(DOWN, ndx, ndy)){
+				dir = DOWN;
+				nextDir = 4;
+			}
+		}else if (nextDir == LEFT){
+			ndx -= delta * SPEED;
+			if (!isIntersecting(LEFT, ndx, ndy)){
+				dir = LEFT;
+				nextDir = 4;
+			}
+		}else if (nextDir == RIGHT){
+			ndx += delta * SPEED;
+			if (!isIntersecting(RIGHT, ndx, ndy)){
+				dir = RIGHT;
+				nextDir = 4;
 			}
 		}
 		
@@ -133,6 +171,8 @@ public class Player {
 		
 		pacMan.update(delta);
 		colBox.setLocation((int)x, (int)y);
+		
+		lastDir = dir;
 	}
 	
 	public boolean isIntersecting(int d, float dx, float dy){
@@ -140,87 +180,15 @@ public class Player {
 		Rectangle tempColBox = new Rectangle((int)dx, (int)dy, Pacman.getTilesize(), Pacman.getTilesize());
 		
 		for (int k = 0; k < Pacman.walls.length; k++){
-			if (colBox.intersects(Pacman.walls[k])){
+			if (tempColBox.intersects(Pacman.walls[k])){
 				
 				return true;
 				
-//				double cx = colBox.getCenterX();
-//				double cy = colBox.getCenterY();
-//				double wx = Pacman.walls[k].getCenterX();
-//				double wy = Pacman.walls[k].getCenterY();
-				
-//				if (cy < wy && d == UP){
-//					return true;
-//				}else if (cy > wy && d == DOWN){
-//					return true;
-//				}else if (cx < wx && d == LEFT){
-//					return true;
-//				}else if (cx > wx && d == RIGHT){
-//					return true;
-//				}
 			}
 		}
 		
 		return false;
-		
-//		for (int i = 0; i < Pacman.walls.length; i++){
-//			
-//			Rectangle rec = Pacman.walls[i];
-//			
-//			float s = (float) (Pacman.getTilesize());
-//			float dx = (float) (colBox.getCenterX() - rec.getCenterX());
-//			float dy = (float) (colBox.getCenterY() - rec.getCenterY());
-//			
-//			if (Math.abs(dx) <= s && Math.abs(dy) <= s) {
-//				
-//				System.out.println("ColBoxX: " + colBox.getCenterX()/16);
-//				System.out.println("recX: " + rec.getCenterX()/16);
-//				
-//				System.out.println("ColBoxY: " + colBox.getCenterY()/16);
-//				System.out.println("recY: " + rec.getCenterY()/16);
-//				
-//				//System.out.println("dy-dx = " + (dy - dx));
-//				//System.out.println("dy: " + dy);
-//				
-//				//System.out.println("colliding");
-//				
-//			    /* collision! */
-////				float sx = s * dx;
-////			    float sy = s * dy;
-//			    
-//			    if (dy > dx){
-//			        if (dy > -dx){
-//			        	if (d == UP){
-//			        		//System.out.println("up");
-//			        		/* collision at the top */
-//			        		return true;
-//			        	}
-//			        }else{
-//			        	if (d == LEFT){
-//			        		//System.out.println("left");
-//			        		/* on the left */
-//			        		return true;
-//			        	}
-//			        }
-//			    }else{
-//			        if (dy > -dx){
-//			        	if (d == RIGHT){
-//			        		//System.out.println("right");
-//			        		/* on the right */
-//			        		return true;
-//			        	}
-//			        }else{
-//			        	if (d == DOWN){
-//			        		//System.out.println("down");
-//			        		/* at the bottom */
-//			        		return true;
-//			        	}
-//			        }
-//			    }	
-//			}
-//		}
-//		return false;
-		
+
 	}
 	
 	public Rectangle getPacBox(){

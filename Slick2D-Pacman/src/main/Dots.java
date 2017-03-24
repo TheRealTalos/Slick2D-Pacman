@@ -35,7 +35,7 @@ public class Dots {
 		for (int x = 0; x < Pacman.getWorldsize() / Pacman.getTilesize(); x++){
 			for (int y = 0; y < Pacman.getWorldsize() / Pacman.getTilesize(); y++){
 				if (Pacman.getPlayer().getPacBox().intersects(dotsRec[x][y])){
-					System.out.println("manlymen");
+					System.out.println("VIWI");
 					dots[x][y] = null;
 				}
 			}

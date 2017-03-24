@@ -11,7 +11,6 @@ public class Pacman extends BasicGame{
 	//MAKE SCALABLE GAME
 	//MESS WITH SETTINGS
 	//ADD DOT COLLISION
-	//ADD PROPER MOVEMENT
 	
 	private static TiledMap map;
 	private static Player player = new Player();
