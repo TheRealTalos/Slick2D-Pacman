@@ -44,16 +44,16 @@ public class Player {
 	
 	public void init(){
 		
-		Image[] pacImageStart = {Pacman.getSheet().getSprite(0, 0)};
-		Image[] pacImageIdleUp = {Pacman.getSheet().getSprite(5, 0)};
-		Image[] pacImageIdleDown = {Pacman.getSheet().getSprite(7, 0)};
-		Image[] pacImageIdleLeft = {Pacman.getSheet().getSprite(1, 0)};
-		Image[] pacImageIdleRight = {Pacman.getSheet().getSprite(3, 0)};
+		Image[] pacImageStart = {Game.getSheet().getSprite(0, 0)};
+		Image[] pacImageIdleUp = {Game.getSheet().getSprite(5, 0)};
+		Image[] pacImageIdleDown = {Game.getSheet().getSprite(7, 0)};
+		Image[] pacImageIdleLeft = {Game.getSheet().getSprite(1, 0)};
+		Image[] pacImageIdleRight = {Game.getSheet().getSprite(3, 0)};
 		
-		Image[] pacImageUp = {Pacman.getSheet().getSprite(0, 0), Pacman.getSheet().getSprite(5,0), Pacman.getSheet().getSprite(6, 0), Pacman.getSheet().getSprite(5, 0)};
-		Image[] pacImageDown = {Pacman.getSheet().getSprite(0, 0), Pacman.getSheet().getSprite(7,0), Pacman.getSheet().getSprite(8, 0), Pacman.getSheet().getSprite(7, 0)};
-		Image[] pacImageLeft = {Pacman.getSheet().getSprite(0, 0), Pacman.getSheet().getSprite(1,0), Pacman.getSheet().getSprite(2, 0), Pacman.getSheet().getSprite(1, 0)};
-		Image[] pacImageRight = {Pacman.getSheet().getSprite(0, 0), Pacman.getSheet().getSprite(3,0), Pacman.getSheet().getSprite(4, 0), Pacman.getSheet().getSprite(3, 0)};
+		Image[] pacImageUp = {Game.getSheet().getSprite(0, 0), Game.getSheet().getSprite(5,0), Game.getSheet().getSprite(6, 0), Game.getSheet().getSprite(5, 0)};
+		Image[] pacImageDown = {Game.getSheet().getSprite(0, 0), Game.getSheet().getSprite(7,0), Game.getSheet().getSprite(8, 0), Game.getSheet().getSprite(7, 0)};
+		Image[] pacImageLeft = {Game.getSheet().getSprite(0, 0), Game.getSheet().getSprite(1,0), Game.getSheet().getSprite(2, 0), Game.getSheet().getSprite(1, 0)};
+		Image[] pacImageRight = {Game.getSheet().getSprite(0, 0), Game.getSheet().getSprite(3,0), Game.getSheet().getSprite(4, 0), Game.getSheet().getSprite(3, 0)};
 		
 		pacAnimStart = new Animation(pacImageStart, 50, false);
 		pacAnimIdleUp = new Animation(pacImageIdleUp, 50, false);
@@ -214,8 +214,8 @@ public class Player {
 		
 		Rectangle tempColBox = new Rectangle((int)dx, (int)dy, Pacman.getTilesize(), Pacman.getTilesize());
 		
-		for (int k = 0; k < Pacman.walls.length; k++){
-			if (tempColBox.intersects(Pacman.walls[k])){
+		for (int k = 0; k < Game.walls.length; k++){
+			if (tempColBox.intersects(Game.walls[k])){
 				
 				return true;
 				

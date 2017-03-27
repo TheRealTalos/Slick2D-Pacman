@@ -16,7 +16,7 @@ public class Dots {
 	public void init(){
 		for (int x = 0; x < Pacman.getWorldsize() / Pacman.getTilesize(); x++){
 			for (int y = 0; y < Pacman.getWorldsize() / Pacman.getTilesize(); y++){
-				dots[x][y] = Pacman.getSheet().getSprite(0, 1);
+				dots[x][y] = Game.getSheet().getSprite(0, 1);
 			}
 		}
 	}
@@ -32,7 +32,7 @@ public class Dots {
 	public void update(){
 		for (int x = 0; x < Pacman.getWorldsize() / Pacman.getTilesize(); x++){
 			for (int y = 0; y < Pacman.getWorldsize() / Pacman.getTilesize(); y++){
-				if (Pacman.getPlayer().getPacBox().intersects(x * Pacman.getTilesize(), y * Pacman.getTilesize(), Pacman.getTilesize()/2, Pacman.getTilesize()/2)){
+				if (Game.getPlayer().getPacBox().intersects(x * Pacman.getTilesize(), y * Pacman.getTilesize(), Pacman.getTilesize()/2, Pacman.getTilesize()/2)){
 					dots[x][y] = null;
 				}
 			}
