@@ -3,9 +3,13 @@ package main;
 import java.awt.Rectangle;
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 
@@ -29,6 +33,9 @@ public class Player {
 	private static final int DOWN = 1;
 	private static final int LEFT = 2;
 	private static final int RIGHT = 3;
+	
+	private String nextDirec = "";
+	private String lastDirec = "";
 
 	public Player(){
 		
@@ -65,9 +72,10 @@ public class Player {
 		
 	}
 	
-	public void render(){
+	public void render(Graphics g){
 		
 		pacMan.draw(x, y);
+		g.drawString(nextDirec, 200, 200);
 		
 	}
 	
@@ -76,6 +84,11 @@ public class Player {
 		
 		float dx = x;
 		float dy = y;
+		
+		if (input.isMousePressed(0)){
+			System.out.println("x: " + input.getMouseX());
+			System.out.println("y: " + input.getMouseY());
+		}
 		
 		if (input.isKeyPressed(input.KEY_UP)){
 			dir = UP;
@@ -166,13 +179,35 @@ public class Player {
 			}
 		}
 		
-		if (colBox.getMinX() > Pacman.getWorldsize()) x = 0;
-		else if (colBox.getMaxX() < 0) x = Pacman.getWorldsize() - Pacman.getTilesize();
+		if (colBox.getMinX() < 0 - Pacman.getTilesize()/2){
+			if (dir == LEFT) x = Pacman.getWorldsize() + Pacman.getTilesize()/2;
+			if (pacMan == pacAnimIdleUp || pacMan == pacAnimIdleDown || pacMan == pacAnimUp || pacMan == pacAnimDown) dir = RIGHT;
+			if (y != 144.31007) y = 144.31007f;
+		}
+		
+		if (colBox.getMaxX() > Pacman.getWorldsize() + Pacman.getTilesize()/2){
+			if (dir == RIGHT) x = 0 - Pacman.getTilesize()/2;
+			if (pacMan == pacAnimIdleUp || pacMan == pacAnimIdleDown || pacMan == pacAnimUp || pacMan == pacAnimDown) dir = LEFT;
+			if (y != 144.31007) y = 144.31007f;
+		}
 		
 		pacMan.update(delta);
 		colBox.setLocation((int)x, (int)y);
 		
 		lastDir = dir;
+		
+		if (nextDir == UP) nextDirec = "Up";
+		if (nextDir == DOWN) nextDirec = "Down";
+		if (nextDir == LEFT) nextDirec = "Left";
+		if (nextDir == RIGHT) nextDirec = "Right";
+		
+		if (lastDir == UP) lastDirec = "Up";
+		if (lastDir == DOWN) lastDirec = "Down";
+		if (lastDir == LEFT) lastDirec = "Left";
+		if (lastDir == RIGHT) lastDirec = "Right";
+		
+		
+
 	}
 	
 	public boolean isIntersecting(int d, float dx, float dy){
@@ -190,6 +225,10 @@ public class Player {
 		return false;
 
 	}
+	
+//	public void tryMove(int dir){
+//		if ()
+//	}
 	
 	public Rectangle getPacBox(){
 		return colBox;

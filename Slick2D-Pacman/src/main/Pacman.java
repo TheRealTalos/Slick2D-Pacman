@@ -10,7 +10,7 @@ public class Pacman extends BasicGame{
 	
 	//MAKE SCALABLE GAME
 	//MESS WITH SETTINGS
-	//ADD DOT COLLISION
+	//FIX MOVEMENT BUGS
 	
 	private static TiledMap map;
 	private static Player player = new Player();
@@ -66,11 +66,11 @@ public class Pacman extends BasicGame{
 	}
 
 	@Override
-	public void render(GameContainer arg0, Graphics arg1) throws SlickException {
+	public void render(GameContainer arg0, Graphics g) throws SlickException {
 		
 		dots.render();
 		map.render(0, 0);
-		player.render();
+		player.render(g);
 		
 	}
 
