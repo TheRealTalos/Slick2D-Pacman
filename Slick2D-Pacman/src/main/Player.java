@@ -91,22 +91,28 @@ public class Player {
 		}
 		
 		if (input.isKeyPressed(input.KEY_UP)){
+			if (isIntersecting(UP, dx, dy)) nextDir = UP;
+			
 			dir = UP;
-			nextDir = 4;
 			
 		}else if (input.isKeyPressed(input.KEY_DOWN)){
+			if (isIntersecting(DOWN, dx, dy)) nextDir = DOWN;
+			
 			dir = DOWN;
-			nextDir = 4;
 			
 		}else if (input.isKeyPressed(input.KEY_LEFT)){
+			if (isIntersecting(LEFT, dx, dy)) nextDir = LEFT;
+			
 			dir = LEFT;
-			nextDir = 4;
 			
 		}else if (input.isKeyPressed(input.KEY_RIGHT)){
+			if (isIntersecting(RIGHT, dx, dy)) nextDir = RIGHT;
+			
 			dir = RIGHT;
-			nextDir = 4;
 			
 		}
+		
+		boolean asdf = false;
 		
 		if (dir == UP){
 			dy -= delta * SPEED;
@@ -116,7 +122,6 @@ public class Player {
 			}else{
 				pacMan = pacAnimIdleUp;
 				dir = lastDir;
-				nextDir = UP;
 			}
 		}else if (dir == DOWN){
 			dy += delta * SPEED;
@@ -126,7 +131,6 @@ public class Player {
 			}else{
 				pacMan = pacAnimIdleDown;
 				dir = lastDir;
-				nextDir = DOWN;
 			}
 		}else if (dir == LEFT){
 			dx -= delta * SPEED;
@@ -136,7 +140,6 @@ public class Player {
 			}else{
 				pacMan = pacAnimIdleLeft;
 				dir = lastDir;
-				nextDir = LEFT;
 			}
 		}else if (dir == RIGHT){
 			dx += delta * SPEED;
@@ -146,7 +149,6 @@ public class Player {
 			}else{
 				pacMan = pacAnimIdleRight;
 				dir = lastDir;
-				nextDir = RIGHT;
 			}
 		}
 		
@@ -196,17 +198,17 @@ public class Player {
 		
 		lastDir = dir;
 		
+		if (nextDir == 4) nextDirec = "NULL";
 		if (nextDir == UP) nextDirec = "Up";
 		if (nextDir == DOWN) nextDirec = "Down";
 		if (nextDir == LEFT) nextDirec = "Left";
+		if (nextDir == LEFT && asdf) nextDirec = "Leftasdf";
 		if (nextDir == RIGHT) nextDirec = "Right";
 		
 		if (lastDir == UP) lastDirec = "Up";
 		if (lastDir == DOWN) lastDirec = "Down";
 		if (lastDir == LEFT) lastDirec = "Left";
 		if (lastDir == RIGHT) lastDirec = "Right";
-		
-		
 
 	}
 	
