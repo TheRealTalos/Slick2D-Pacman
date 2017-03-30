@@ -22,17 +22,17 @@ public class Player {
 	private float x = 10*Pacman.getTilesize();
 	private float y = 15*Pacman.getTilesize();
 	
-	private int dir = 4;
-	private int lastDir = 4;
-	private int nextDir = 4;
-	private boolean moving, mUp, mDown, mLeft, mRight = false;
-	
 	private static final float SPEED = 0.07f;
 	
 	private static final int UP = 0;
 	private static final int DOWN = 1;
 	private static final int LEFT = 2;
 	private static final int RIGHT = 3;
+	private static final int NULL = 4;
+	
+	private int dir = NULL;
+	private int lastDir = NULL;
+	private int nextDir = NULL;
 	
 	private String nextDirec = "";
 	private String lastDirec = "";
@@ -91,95 +91,87 @@ public class Player {
 		}
 		
 		if (input.isKeyPressed(input.KEY_UP)){
-			if (isIntersecting(UP, dx, dy)) nextDir = UP;
-			
-			dir = UP;
+
+			nextDir = UP;
+			//nextDir = NULL;
 			
 		}else if (input.isKeyPressed(input.KEY_DOWN)){
-			if (isIntersecting(DOWN, dx, dy)) nextDir = DOWN;
-			
-			dir = DOWN;
+
+			nextDir = DOWN;
+			//nextDir = NULL;
 			
 		}else if (input.isKeyPressed(input.KEY_LEFT)){
-			if (isIntersecting(LEFT, dx, dy)) nextDir = LEFT;
-			
-			dir = LEFT;
+
+			nextDir = LEFT;
+			//nextDir = NULL;
 			
 		}else if (input.isKeyPressed(input.KEY_RIGHT)){
-			if (isIntersecting(RIGHT, dx, dy)) nextDir = RIGHT;
 			
-			dir = RIGHT;
+			nextDir = RIGHT;
+			//nextDir = NULL;
 			
 		}
 		
-		boolean asdf = false;
+		if (nextDir == UP){
+			if (!isIntersecting(UP, delta)){
+				dir = UP;
+				nextDir = NULL;
+			}
+		}else if (nextDir == DOWN){
+			if (!isIntersecting(DOWN, delta)){
+				dir = DOWN;
+				nextDir = NULL;
+			}
+		}else if (nextDir == LEFT){
+			if (!isIntersecting(LEFT, delta)){
+				dir = LEFT;
+				nextDir = NULL;
+			}
+		}else if (nextDir == RIGHT){
+			if (!isIntersecting(RIGHT, delta)){
+				dir = RIGHT;
+				nextDir = NULL;
+			}
+		}
 		
 		if (dir == UP){
-			dy -= delta * SPEED;
-			if (!isIntersecting(UP, dx, dy)){
+			if (!isIntersecting(UP, delta)){
 				y -= delta * SPEED;
 				pacMan = pacAnimUp;
-			}else{
+			}else {
 				pacMan = pacAnimIdleUp;
 				dir = lastDir;
 			}
+			
 		}else if (dir == DOWN){
-			dy += delta * SPEED;
-			if (!isIntersecting(DOWN, dx, dy)){
+			if (!isIntersecting(DOWN, delta)){
 				y += delta * SPEED;
 				pacMan = pacAnimDown;
-			}else{
+			}else {
 				pacMan = pacAnimIdleDown;
 				dir = lastDir;
 			}
+			
 		}else if (dir == LEFT){
-			dx -= delta * SPEED;
-			if (!isIntersecting(LEFT, dx, dy)){
+			if (!isIntersecting(LEFT, delta)){
 				x -= delta * SPEED;
 				pacMan = pacAnimLeft;
-			}else{
+			}else {
 				pacMan = pacAnimIdleLeft;
 				dir = lastDir;
 			}
+			
 		}else if (dir == RIGHT){
-			dx += delta * SPEED;
-			if (!isIntersecting(RIGHT, dx, dy)){
+			if (!isIntersecting(RIGHT, delta)){
 				x += delta * SPEED;
 				pacMan = pacAnimRight;
-			}else{
+			}else {
 				pacMan = pacAnimIdleRight;
 				dir = lastDir;
 			}
+			
 		}
 		
-		float ndx = x;
-		float ndy = y;
-		
-		if (nextDir == UP){
-			ndy -= delta * SPEED;
-			if (!isIntersecting(UP, ndx, ndy)){
-				dir = UP;
-				nextDir = 4;
-			}
-		}else if (nextDir == DOWN){
-			ndy += delta * SPEED;
-			if (!isIntersecting(DOWN, ndx, ndy)){
-				dir = DOWN;
-				nextDir = 4;
-			}
-		}else if (nextDir == LEFT){
-			ndx -= delta * SPEED;
-			if (!isIntersecting(LEFT, ndx, ndy)){
-				dir = LEFT;
-				nextDir = 4;
-			}
-		}else if (nextDir == RIGHT){
-			ndx += delta * SPEED;
-			if (!isIntersecting(RIGHT, ndx, ndy)){
-				dir = RIGHT;
-				nextDir = 4;
-			}
-		}
 		
 		if (colBox.getMinX() < 0 - Pacman.getTilesize()/2){
 			if (dir == LEFT) x = Pacman.getWorldsize() + Pacman.getTilesize()/2;
@@ -198,11 +190,10 @@ public class Player {
 		
 		lastDir = dir;
 		
-		if (nextDir == 4) nextDirec = "NULL";
+		if (nextDir == NULL) nextDirec = "NULL";
 		if (nextDir == UP) nextDirec = "Up";
 		if (nextDir == DOWN) nextDirec = "Down";
 		if (nextDir == LEFT) nextDirec = "Left";
-		if (nextDir == LEFT && asdf) nextDirec = "Leftasdf";
 		if (nextDir == RIGHT) nextDirec = "Right";
 		
 		if (lastDir == UP) lastDirec = "Up";
@@ -212,25 +203,37 @@ public class Player {
 
 	}
 	
-	public boolean isIntersecting(int d, float dx, float dy){
+	private boolean isIntersecting(int d, int delta){
 		
-		Rectangle tempColBox = new Rectangle((int)dx, (int)dy, Pacman.getTilesize(), Pacman.getTilesize());
-		
-		for (int k = 0; k < Game.walls.length; k++){
-			if (tempColBox.intersects(Game.walls[k])){
-				
-				return true;
-				
+		if (d == UP){
+			float dy = y - delta * SPEED;
+			Rectangle r = new Rectangle((int)x, (int)dy, Pacman.getTilesize(), Pacman.getTilesize());
+			for (int i = 0; i < Game.walls.length; i++){
+				if (r.intersects(Game.walls[i])) return true;
+			}
+		}else if (d == DOWN){
+			float dy = y + delta * SPEED;
+			Rectangle r = new Rectangle((int)x, (int)dy, Pacman.getTilesize(), Pacman.getTilesize());
+			for (int i = 0; i < Game.walls.length; i++){
+				if (r.intersects(Game.walls[i])) return true;
+			}
+		}else if (d == LEFT){
+			float dx = x - delta * SPEED;
+			Rectangle r = new Rectangle((int)dx, (int)y, Pacman.getTilesize(), Pacman.getTilesize());
+			for (int i = 0; i < Game.walls.length; i++){
+				if (r.intersects(Game.walls[i])) return true;
+			}
+		}else if (d == RIGHT){
+			float dx = x + delta * SPEED;
+			Rectangle r = new Rectangle((int)dx, (int)y, Pacman.getTilesize(), Pacman.getTilesize());
+			for (int i = 0; i < Game.walls.length; i++){
+				if (r.intersects(Game.walls[i])) return true;
 			}
 		}
 		
 		return false;
-
+		
 	}
-	
-//	public void tryMove(int dir){
-//		if ()
-//	}
 	
 	public Rectangle getPacBox(){
 		return colBox;
