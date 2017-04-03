@@ -43,7 +43,7 @@ public class Pacman extends StateBasedGame{
 	@Override
 	public void initStatesList(GameContainer gc) throws SlickException {
 		this.getState(MENU).init(gc, this);
-		//this.getState(GAME).init(gc, this);
+		this.getState(GAME).init(gc, this);
 		this.enterState(MENU);
 	}
 	

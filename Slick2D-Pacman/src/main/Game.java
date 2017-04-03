@@ -13,6 +13,8 @@ import org.newdawn.slick.tiled.TiledMap;
 
 public class Game extends BasicGameState{
 	
+	private static int STATE;
+	
 	private static TiledMap map;
 	private static Player player = new Player();
 	private static SpriteSheet sheet;
@@ -21,7 +23,7 @@ public class Game extends BasicGameState{
 	public static Rectangle[] walls = new Rectangle[202];
 	
 	public Game(int state){
-		
+		STATE = state;
 	}
 
 	@Override
@@ -62,7 +64,7 @@ public class Game extends BasicGameState{
 
 	@Override
 	public int getID() {
-		return 0;
+		return STATE;
 	}
 	
 	public static SpriteSheet getSheet() {

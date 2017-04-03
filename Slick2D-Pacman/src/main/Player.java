@@ -90,22 +90,22 @@ public class Player {
 			System.out.println("y: " + input.getMouseY());
 		}
 		
-		if (input.isKeyPressed(input.KEY_UP)){
+		if (input.isKeyPressed(Input.KEY_UP) || input.isKeyPressed(Input.KEY_W)){
 
 			nextDir = UP;
 			//nextDir = NULL;
 			
-		}else if (input.isKeyPressed(input.KEY_DOWN)){
+		}else if (input.isKeyPressed(Input.KEY_DOWN) || input.isKeyPressed(Input.KEY_A)){
 
 			nextDir = DOWN;
 			//nextDir = NULL;
 			
-		}else if (input.isKeyPressed(input.KEY_LEFT)){
+		}else if (input.isKeyPressed(Input.KEY_LEFT) || input.isKeyPressed(Input.KEY_S)){
 
 			nextDir = LEFT;
 			//nextDir = NULL;
 			
-		}else if (input.isKeyPressed(input.KEY_RIGHT)){
+		}else if (input.isKeyPressed(Input.KEY_RIGHT) || input.isKeyPressed(Input.KEY_D)){
 			
 			nextDir = RIGHT;
 			//nextDir = NULL;
