@@ -16,7 +16,7 @@ public class Dots {
 	public void init(){
 		for (int x = 0; x < Pacman.getWorldsize() / Pacman.getTilesize(); x++){
 			for (int y = 0; y < Pacman.getWorldsize() / Pacman.getTilesize(); y++){
-				dots[x][y] = Game.getSheet().getSprite(0, 1);
+				dots[x][y] = Game.getSheet().getSprite(9, 0);
 			}
 		}
 	}

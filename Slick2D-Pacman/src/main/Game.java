@@ -20,7 +20,7 @@ public class Game extends BasicGameState{
 	private static SpriteSheet sheet;
 	private static Dots dots = new Dots();
 	
-	public static Rectangle[] walls = new Rectangle[202];
+	public static Rectangle[] walls = new Rectangle[203];
 	
 	public Game(int state){
 		STATE = state;
