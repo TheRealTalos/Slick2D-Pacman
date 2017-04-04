@@ -19,6 +19,7 @@ public class Game extends BasicGameState{
 	private static Player player = new Player();
 	private static SpriteSheet sheet;
 	private static Dots dots = new Dots();
+	private static Hud hud = new Hud();
 	
 	public static Rectangle[] walls = new Rectangle[203];
 	
@@ -29,12 +30,11 @@ public class Game extends BasicGameState{
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		map = new TiledMap("res/maps/map.tmx");
-		
 		sheet = new SpriteSheet(new Image("res/spritesheets/SpriteSheet.png"), Pacman.getTilesize(), Pacman.getTilesize());
 		
 		player.init();
-		
 		dots.init();
+		hud.init();
 		
 		int w = 0;
 		
@@ -54,12 +54,14 @@ public class Game extends BasicGameState{
 		dots.render();
 		map.render(0, 0);
 		player.render(g);
+		hud.render(g);
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
 		player.update(gc, delta);
 		dots.update();
+		hud.update();
 	}
 
 	@Override

@@ -75,7 +75,7 @@ public class Player {
 	public void render(Graphics g){
 		
 		pacMan.draw(x, y);
-		g.drawString(nextDirec, 200, 200);
+		g.drawString(nextDirec, 290, 340);
 		
 	}
 	

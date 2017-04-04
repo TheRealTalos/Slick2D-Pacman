@@ -1,6 +1,10 @@
 package main;
 
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.newdawn.slick.*;
@@ -13,9 +17,14 @@ public class Pacman extends StateBasedGame{
 	//MESS WITH SETTINGS
 	//FIX MOVEMENT BUGS
 	
+	private static final int SCALE = 2;
+	
+	private static final int WINDOWWIDTH = 336;
+	private static final int WINDOWHEIGHT = 400;
+	
 	private static final int WORLDSIZE = 336;
 	private static final int TILESIZE = 16;
-	private static final int SCALE = 2;
+	
 	private static final int MENU = 0;
 	private static final int GAME = 1;
 	
@@ -28,14 +37,21 @@ public class Pacman extends StateBasedGame{
 	
 	public static void main(String[] args){
 		try{
-			
 			AppGameContainer app = new AppGameContainer(new Pacman());
-			app.setDisplayMode(WORLDSIZE, WORLDSIZE, false);
+			app.setDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, false);
 			app.setTargetFrameRate(60);
 			app.start();
 			
 		}catch(SlickException e){
 			e.printStackTrace();
+		}
+		
+		try {
+		     GraphicsEnvironment ge = 
+		         GraphicsEnvironment.getLocalGraphicsEnvironment();
+		     ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, new File("res/emulogic.ttf")));
+		} catch (IOException|FontFormatException e) {
+		     e.printStackTrace();
 		}
 		
 	}
