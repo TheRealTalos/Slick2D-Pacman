@@ -102,6 +102,11 @@
     <property name="Wall" type="bool" value="true"/>
    </properties>
   </tile>
+  <tile id="49">
+   <properties>
+    <property name="Dot" type="bool" value="false"/>
+   </properties>
+  </tile>
   <tile id="60">
    <properties>
     <property name="Wall" type="bool" value="true"/>
@@ -175,10 +180,23 @@
  </tileset>
  <tileset firstgid="341" name="Black" tilewidth="16" tileheight="16" tilecount="1" columns="1">
   <image source="../tiles/Black.png" width="16" height="16"/>
+  <tile id="0">
+   <properties>
+    <property name="Dot" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="342" name="BigDot" tilewidth="16" tileheight="16" tilecount="1" columns="1">
+  <image source="../tiles/Black.png" width="16" height="16"/>
+  <tile id="0">
+   <properties>
+    <property name="BigDot" type="bool" value="true"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="Tile Layer 1" width="21" height="21">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC72UfQ6CMAzFyyFURPF/1IAeQEQ9gR/o/W9iCWtSnx2bIbHJSzbWNb882rUJ0YyIbgHNI3I2rDbpNaVw5BE5a6PmhHVQ673aXz3f9R2r5tgIcRbAtQC+wrgT4kT/Qnuseed17bR15y8a9vPi9qm6e1Q1tYQZObozi1OzibDHGuDKWEvWirVjlXD+oO8aociBI6ZPa5D4Kf/1TL1/oiecp0aNWD8t/i4sP1uY98bl4n/G/rT8/Oe8l2odM+8ZhefIx4P9aeV/eGvwxM675j95OH28v8679lP6sKJhPyuV+6/3U79LYyTv0hs7M6/s5AYAAA==
+   H4sIAAAAAAAAC71UUQ6CMAythxAVxX/QgPovop4AlXn/m9jFNtSmsCUkNnlhG6/Ny9taAIAF4hHAKoKzgz4SRDcbRxbBKVRNh2dz/J4p16+PYt8OnHOOM2qGNMTAqil15krXWunLjZyQTu1faK9rPhE1YU/ct9Dlo6Uv674TbylyL2AHa86MfycB1lkYPP3GGujv2UeK2CC2iAOipJr8Dl5GDSs8l0Przagm86R2Rq3AfuaUd4OvfwxH53zvS6OGjjE/td4hP33Ifm/g10/rffqw/PxHv3NPlGId0+8pDPeRC+iBgXPm6xnSGXpi+13qvwb8nNrvidLkUQX8rAQ3di5NnZ9yLk0Bz6UPwU7l1+QGAAA=
   </data>
  </layer>
 </map>

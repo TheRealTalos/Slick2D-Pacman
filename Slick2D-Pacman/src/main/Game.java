@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.Font;
 import java.awt.Rectangle;
 
 import org.newdawn.slick.GameContainer;
@@ -10,6 +11,7 @@ import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
+import org.newdawn.slick.util.ResourceLoader;
 
 public class Game extends BasicGameState{
 	
@@ -51,8 +53,8 @@ public class Game extends BasicGameState{
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
-		dots.render();
 		map.render(0, 0);
+		dots.render();
 		player.render(g);
 		hud.render(g);
 	}
@@ -61,7 +63,7 @@ public class Game extends BasicGameState{
 	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
 		player.update(gc, delta);
 		dots.update();
-		hud.update();
+//		hud.update();
 	}
 
 	@Override

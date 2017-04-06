@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
@@ -8,14 +9,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.newdawn.slick.*;
+import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
+import org.newdawn.slick.util.ResourceLoader;
 
 public class Pacman extends StateBasedGame{
 	
 	//MAKE SCALABLE GAME
 	//MESS WITH SETTINGS
 	//FIX MOVEMENT BUGS
+	
+	public static UnicodeFont pacFont;
 	
 	private static final int SCALE = 2;
 	
@@ -47,12 +52,15 @@ public class Pacman extends StateBasedGame{
 		}
 		
 		try {
-		     GraphicsEnvironment ge = 
-		         GraphicsEnvironment.getLocalGraphicsEnvironment();
-		     ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, new File("res/emulogic.ttf")));
-		} catch (IOException|FontFormatException e) {
-		     e.printStackTrace();
+			pacFont = new UnicodeFont(Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("res/emulogic.ttf")));
+			pacFont.addAsciiGlyphs();
+			pacFont.getEffects().add(new ColorEffect());
+			System.out.println("Font Initialized");
+		} catch (FontFormatException | IOException e) {
+			System.out.println("Font Not Initialized");
+			e.printStackTrace();
 		}
+		
 		
 	}
 	
