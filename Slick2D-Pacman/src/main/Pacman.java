@@ -20,8 +20,6 @@ public class Pacman extends StateBasedGame{
 	//MESS WITH SETTINGS
 	//FIX MOVEMENT BUGS
 	
-	public static UnicodeFont pacFont;
-	
 	private static final int SCALE = 2;
 	
 	private static final int WINDOWWIDTH = 336;
@@ -50,17 +48,6 @@ public class Pacman extends StateBasedGame{
 		}catch(SlickException e){
 			e.printStackTrace();
 		}
-		
-		try {
-			pacFont = new UnicodeFont(Font.createFont(Font.TRUETYPE_FONT, ResourceLoader.getResourceAsStream("res/emulogic.ttf")));
-			pacFont.addAsciiGlyphs();
-			pacFont.getEffects().add(new ColorEffect());
-			System.out.println("Font Initialized");
-		} catch (FontFormatException | IOException e) {
-			System.out.println("Font Not Initialized");
-			e.printStackTrace();
-		}
-		
 		
 	}
 	
