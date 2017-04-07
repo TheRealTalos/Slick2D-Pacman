@@ -18,7 +18,6 @@ public class Pacman extends StateBasedGame{
 	
 	//MAKE SCALABLE GAME
 	//MESS WITH SETTINGS
-	//FIX MOVEMENT BUGS
 	
 	private static final int SCALE = 2;
 	

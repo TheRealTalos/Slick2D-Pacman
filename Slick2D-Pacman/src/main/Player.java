@@ -13,7 +13,7 @@ import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 
-public class Player {
+public class Player extends Character{
 	
 	private Animation pacMan, pacAnimUp, pacAnimDown, pacAnimLeft, pacAnimRight, pacAnimStart, pacAnimIdleUp, pacAnimIdleDown, pacAnimIdleLeft, pacAnimIdleRight;
 	
@@ -22,7 +22,7 @@ public class Player {
 	private float x = 10*Pacman.getTilesize();
 	private float y = 15*Pacman.getTilesize();
 	
-	private static final float SPEED = 0.07f;
+	private static final float SPEED = 1f;
 	
 	private static final int UP = 0;
 	private static final int DOWN = 1;
@@ -31,11 +31,7 @@ public class Player {
 	private static final int NULL = 4;
 	
 	private int dir = NULL;
-	private int lastDir = NULL;
 	private int nextDir = NULL;
-	
-	private String nextDirec = "";
-	private String lastDirec = "";
 
 	public Player(){
 		
@@ -75,16 +71,11 @@ public class Player {
 	public void render(Graphics g){
 		
 		pacMan.draw(x, y);
-		g.drawString(nextDirec, 290, 340);
-		g.drawString(lastDirec, 290, 360);
 		
 	}
 	
 	public void update(GameContainer container, int delta){	
 		Input input = container.getInput();
-		
-		float dx = x;
-		float dy = y;
 		
 		if (input.isMousePressed(0)){
 			System.out.println("x: " + input.getMouseX());
@@ -94,50 +85,46 @@ public class Player {
 		if (input.isKeyPressed(Input.KEY_UP) || input.isKeyPressed(Input.KEY_W)){
 
 			nextDir = UP;
-			//dir = NULL;
 			
 		}else if (input.isKeyPressed(Input.KEY_DOWN) || input.isKeyPressed(Input.KEY_A)){
 
 			nextDir = DOWN;
-			//dir = NULL;
 			
 		}else if (input.isKeyPressed(Input.KEY_LEFT) || input.isKeyPressed(Input.KEY_S)){
 
 			nextDir = LEFT;
-			//dir = NULL;
 			
 		}else if (input.isKeyPressed(Input.KEY_RIGHT) || input.isKeyPressed(Input.KEY_D)){
 			
 			nextDir = RIGHT;
-			//dir = NULL;
 			
 		}
 		
 		if (nextDir == UP){
-			if (!isIntersecting(UP, delta)){
+			if (!wouldIntersect(UP, delta)){
 				dir = UP;
 				nextDir = NULL;
 			}
 		}else if (nextDir == DOWN){
-			if (!isIntersecting(DOWN, delta)){
+			if (!wouldIntersect(DOWN, delta)){
 				dir = DOWN;
 				nextDir = NULL;
 			}
 		}else if (nextDir == LEFT){
-			if (!isIntersecting(LEFT, delta)){
+			if (!wouldIntersect(LEFT, delta)){
 				dir = LEFT;
 				nextDir = NULL;
 			}
 		}else if (nextDir == RIGHT){
-			if (!isIntersecting(RIGHT, delta)){
+			if (!wouldIntersect(RIGHT, delta)){
 				dir = RIGHT;
 				nextDir = NULL;
 			}
 		}
 		
 		if (dir == UP){
-			if (!isIntersecting(UP, delta)){
-				y -= delta * SPEED;
+			if (!wouldIntersect(UP, delta)){
+				y -= SPEED;
 				pacMan = pacAnimUp;
 			}else {
 				pacMan = pacAnimIdleUp;
@@ -145,8 +132,8 @@ public class Player {
 			}
 			
 		}else if (dir == DOWN){
-			if (!isIntersecting(DOWN, delta)){
-				y += delta * SPEED;
+			if (!wouldIntersect(DOWN, delta)){
+				y += SPEED;
 				pacMan = pacAnimDown;
 			}else {
 				pacMan = pacAnimIdleDown;
@@ -154,8 +141,8 @@ public class Player {
 			}
 			
 		}else if (dir == LEFT){
-			if (!isIntersecting(LEFT, delta)){
-				x -= delta * SPEED;
+			if (!wouldIntersect(LEFT, delta)){
+				x -= SPEED;
 				pacMan = pacAnimLeft;
 			}else {
 				pacMan = pacAnimIdleLeft;
@@ -163,14 +150,13 @@ public class Player {
 			}
 			
 		}else if (dir == RIGHT){
-			if (!isIntersecting(RIGHT, delta)){
-				x += delta * SPEED;
+			if (!wouldIntersect(RIGHT, delta)){
+				x += SPEED;
 				pacMan = pacAnimRight;
 			}else {
 				pacMan = pacAnimIdleRight;
 				dir = NULL;
 			}
-			
 		}
 		
 		
@@ -188,61 +174,35 @@ public class Player {
 		
 		pacMan.update(delta);
 		colBox.setLocation((int)x, (int)y);
-		
-		lastDir = dir;
-		
-		if (nextDir == NULL) nextDirec = "NULL";
-		if (nextDir == UP) nextDirec = "Up";
-		if (nextDir == DOWN) nextDirec = "Down";
-		if (nextDir == LEFT) nextDirec = "Left";
-		if (nextDir == RIGHT) nextDirec = "Right";
-		
-		if (dir == NULL) lastDirec = "NULL";
-		if (dir == UP) lastDirec = "Up";
-		if (dir == DOWN) lastDirec = "Down";
-		if (dir == LEFT) lastDirec = "Left";
-		if (dir == RIGHT) lastDirec = "Right";
 
 	}
 	
-	private boolean isIntersecting(int d, int delta){
+	private boolean wouldIntersect(int d, int delta){
 		
-		float bdy = y - delta * SPEED;
-		float dy = y + delta * SPEED;
-		float bdx = x - delta * SPEED;
-		float dx = x + delta * SPEED;
+		float bdy = (y - SPEED);
+		float dy = (y + SPEED);
+		float bdx = (x - SPEED);
+		float dx = (x + SPEED);
 		
 		if (d == UP){
 			Rectangle r = new Rectangle((int)x, (int)bdy, Pacman.getTilesize(), Pacman.getTilesize());
 			for (int i = 0; i < Game.walls.length; i++){
-				if (r.intersects(Game.walls[i])){
-					System.out.println("intUp");
-					return true;
-				}
+				if (r.intersects(Game.walls[i])) return true;
 			}
 		}else if (d == DOWN){
 			Rectangle r = new Rectangle((int)x, (int)dy, Pacman.getTilesize(), Pacman.getTilesize());
 			for (int i = 0; i < Game.walls.length; i++){
-				if (r.intersects(Game.walls[i])){
-					System.out.println("intDown");
-					return true;
-				}
+				if (r.intersects(Game.walls[i])) return true;
 			}
 		}else if (d == LEFT){
 			Rectangle r = new Rectangle((int)bdx, (int)y, Pacman.getTilesize(), Pacman.getTilesize());
 			for (int i = 0; i < Game.walls.length; i++){
-				if (r.intersects(Game.walls[i])){
-					System.out.println("intLeft");
-					return true;
-				}
+				if (r.intersects(Game.walls[i])) return true;
 			}
 		}else if (d == RIGHT){
 			Rectangle r = new Rectangle((int)dx, (int)y, Pacman.getTilesize(), Pacman.getTilesize());
 			for (int i = 0; i < Game.walls.length; i++){
-				if (r.intersects(Game.walls[i])){
-					System.out.println("intRight");
-					return true;
-				}
+				if (r.intersects(Game.walls[i])) return true;
 			}
 		}
 		
