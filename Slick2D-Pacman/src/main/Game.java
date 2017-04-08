@@ -13,42 +13,46 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.util.ResourceLoader;
 
-public class Game extends BasicGameState{
-	
+public class Game extends BasicGameState {
+
 	private static int STATE;
-	
+
 	private static TiledMap map;
 	private static Player player = new Player();
 	private static SpriteSheet sheet;
 	private static Dots dots = new Dots();
 	private static Hud hud = new Hud();
-	
+	private static RedGhost redGhost = new RedGhost();
+
 	public static Rectangle[] walls = new Rectangle[203];
-	
-	public Game(int state){
+
+	public Game(int state) {
 		STATE = state;
 	}
 
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		map = new TiledMap("res/maps/map.tmx");
-		sheet = new SpriteSheet(new Image("res/spritesheets/SpriteSheet.png"), Pacman.getTilesize(), Pacman.getTilesize());
-		
+		sheet = new SpriteSheet(new Image("res/spritesheets/SpriteSheet.png"), Pacman.getTilesize(),
+				Pacman.getTilesize());
+
 		player.init();
+		redGhost.init();
 		dots.init();
 		hud.init();
-		
+
 		int w = 0;
-		
-		for (int y = 0; y < Pacman.getWorldsize()/Pacman.getTilesize(); y++){
-			for (int x = 0; x < Pacman.getWorldsize()/Pacman.getTilesize(); x++){
-				if (map.getTileProperty(map.getTileId(x, y, 0), "Wall", "nope").equals("true")){
-					walls[w] = new Rectangle(x * Pacman.getTilesize(), y * Pacman.getTilesize(), Pacman.getTilesize(), Pacman.getTilesize());
+
+		for (int y = 0; y < Pacman.getWorldsize() / Pacman.getTilesize(); y++) {
+			for (int x = 0; x < Pacman.getWorldsize() / Pacman.getTilesize(); x++) {
+				if (map.getTileProperty(map.getTileId(x, y, 0), "Wall", "nope").equals("true")) {
+					walls[w] = new Rectangle(x * Pacman.getTilesize(), y * Pacman.getTilesize(), Pacman.getTilesize(),
+							Pacman.getTilesize());
 					w++;
 				}
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -56,21 +60,22 @@ public class Game extends BasicGameState{
 		map.render(0, 0);
 		dots.render();
 		player.render(g);
+		redGhost.render();
 		hud.render(g);
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
 		player.update(gc, delta);
+		redGhost.update(delta);
 		dots.update();
-//		hud.update();
 	}
 
 	@Override
 	public int getID() {
 		return STATE;
 	}
-	
+
 	public static SpriteSheet getSheet() {
 		return sheet;
 	}
@@ -78,9 +83,9 @@ public class Game extends BasicGameState{
 	public static TiledMap getMap() {
 		return map;
 	}
-	
-	public static Player getPlayer(){
+
+	public static Player getPlayer() {
 		return player;
 	}
-	
+
 }

@@ -17,10 +17,10 @@ public class Player extends Character{
 	
 	private Animation pacMan, pacAnimUp, pacAnimDown, pacAnimLeft, pacAnimRight, pacAnimStart, pacAnimIdleUp, pacAnimIdleDown, pacAnimIdleLeft, pacAnimIdleRight;
 	
-	private Rectangle colBox;
+	private static Rectangle colBox;
 	
-	private float x = 10*Pacman.getTilesize();
-	private float y = 15*Pacman.getTilesize();
+	private static float x = 10*Pacman.getTilesize();
+	private static float y = 15*Pacman.getTilesize();
 	
 	private static final float SPEED = 1f;
 	
@@ -34,7 +34,7 @@ public class Player extends Character{
 	private int nextDir = NULL;
 
 	public Player(){
-		
+		super(colBox, x, y);
 	}
 	
 	
