@@ -44,14 +44,19 @@ public class Dots {
 	public void update(){
 		for (int x = 0; x < Pacman.getWorldsize() / Pacman.getTilesize(); x++){
 			for (int y = 0; y < Pacman.getWorldsize() / Pacman.getTilesize(); y++){
-				if (dotsRec[x][y] != null && Game.getPlayer().getPacBox().intersects(dotsRec[x][y])){
+				if (dotsRec[x][y] != null && Game.getPlayer().getColBox().intersects(dotsRec[x][y])){
 					dots[x][y] = null;
 					dotsRec[x][y] = null;
 					Hud.score += 10;
+					Game.getPlayer().dotsEaten++;
 				}
-				if (bigDotsRec[x][y] != null && Game.getPlayer().getPacBox().intersects(bigDotsRec[x][y])){
+				if (bigDotsRec[x][y] != null && Game.getPlayer().getColBox().intersects(bigDotsRec[x][y])){
 					bigDots[x][y] = null;
 					bigDotsRec[x][y] = null;
+					Game.getRedGhost().setMode(Ghost.SCARED);
+					Game.getPinkGhost().setMode(Ghost.SCARED);
+					Game.getBlueGhost().setMode(Ghost.SCARED);
+					Game.getOrangeGhost().setMode(Ghost.SCARED);
 				}
 			}
 		}

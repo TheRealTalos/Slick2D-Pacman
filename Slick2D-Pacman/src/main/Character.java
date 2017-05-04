@@ -2,6 +2,8 @@ package main;
 
 import java.awt.Rectangle;
 
+import org.newdawn.slick.Animation;
+
 public class Character {
 
 	protected static final int UP = 0;
@@ -10,50 +12,38 @@ public class Character {
 	protected static final int RIGHT = 3;
 	protected static final int NULL = 4;
 
-	protected static final float SPEED = 1.1f;
+	protected float SPEED = 1f;
+	
+	protected int dir = NULL;
+	protected int nextDir = NULL;
+	protected int lastDir = NULL;
+	
+	protected boolean dead;
 
-	private double x;
-	private double y;
+	protected float x;
+	protected float y;
+	
+	protected Animation curAnim;
+	protected Animation[] anim;
+	
+	protected Rectangle colBox;
 
-	private Rectangle colBox;
-
-	public Character(Rectangle colBox, double x, double y) {
-		this.colBox = colBox;
-		this.x = x;
-		this.y = y;
+	public Character() {
+	}
+	
+	protected float getX(){
+		return x;
+	}
+	
+	protected float getY(){
+		return y;
 	}
 
-	protected boolean canMove(int d, Character c) {
-		if (!wouldIntersectWalls(d, c.getRect()))
-			return true;
-		return false;
+	protected int getDir(){
+		return dir;
 	}
-
-	protected double move(int d) {
-		if (d == UP)
-			return (double) -SPEED;
-		else if (d == DOWN)
-			return (double) SPEED;
-		else if (d == LEFT)
-			return (double) -SPEED;
-		else if (d == RIGHT)
-			return (double) SPEED;
-		return 0;
-	}
-
-	protected double move(int d, Character c) {
-		if (d == UP && canMove(d, c))
-			return (double) -SPEED;
-		else if (d == DOWN && canMove(d, c))
-			return (double) SPEED;
-		else if (d == LEFT && canMove(d, c))
-			return (double) -SPEED;
-		else if (d == RIGHT && canMove(d, c))
-			return (double) SPEED;
-		return 0;
-	}
-
-	protected Rectangle getRect() {
+	
+	protected Rectangle getColBox() {
 		return colBox;
 	}
 
@@ -82,36 +72,32 @@ public class Character {
 		return false;
 	}
 
-	protected boolean wouldIntersectWalls(int d, Rectangle a) {
+	protected boolean wouldIntersectWalls(int d) {
+		
+		double x = colBox.getMinX();
+		double y = colBox.getMinY();
 
-		double x = a.getMinX();
-		double y = a.getMinY();
+		Rectangle ru = new Rectangle((int) x, (int) (y - SPEED), Pacman.getTilesize(), Pacman.getTilesize());
+		Rectangle rd = new Rectangle((int) x, (int) (y + SPEED), Pacman.getTilesize(), Pacman.getTilesize());
+		Rectangle rl = new Rectangle((int) (x - SPEED), (int) y, Pacman.getTilesize(), Pacman.getTilesize());
+		Rectangle rr = new Rectangle((int) (x + SPEED), (int) y, Pacman.getTilesize(), Pacman.getTilesize());
 
-		if (d == UP) {
-			Rectangle r = new Rectangle((int) x, (int) (y - SPEED), Pacman.getTilesize(), Pacman.getTilesize());
-			for (int i = 0; i < Game.walls.length; i++) {
-				if (r.intersects(Game.walls[i]))
-					return true;
-			}
-		} else if (d == DOWN) {
-			Rectangle r = new Rectangle((int) x, (int) (y + SPEED), Pacman.getTilesize(), Pacman.getTilesize());
-			for (int i = 0; i < Game.walls.length; i++) {
-				if (r.intersects(Game.walls[i]))
-					return true;
-			}
-		} else if (d == LEFT) {
-			Rectangle r = new Rectangle((int) (x - SPEED), (int) y, Pacman.getTilesize(), Pacman.getTilesize());
-			for (int i = 0; i < Game.walls.length; i++) {
-				if (r.intersects(Game.walls[i]))
-					return true;
-			}
-		} else if (d == RIGHT) {
-			Rectangle r = new Rectangle((int) (x + SPEED), (int) y, Pacman.getTilesize(), Pacman.getTilesize());
-			for (int i = 0; i < Game.walls.length; i++) {
-				if (r.intersects(Game.walls[i]))
-					return true;
-			}
+		for (int i = 0; i < Game.walls.length; i++) {
+			if (ru.intersects(Game.walls[i]) && d == UP)
+				return true;
+			if (rd.intersects(Game.walls[i]) && d == DOWN)
+				return true;
+			if (rl.intersects(Game.walls[i]) && d == LEFT)
+				return true;
+			if (rr.intersects(Game.walls[i]) && d == RIGHT)
+				return true;
 		}
+		
+		for (int i = 0; i < Game.semiWalls.length; i++){
+			if (!dead && rd.intersects(Game.semiWalls[i]) && d == DOWN)
+				return true;
+		}
+		
 		return false;
 
 	}

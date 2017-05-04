@@ -30,7 +30,6 @@ public class Hud {
 			pacFont.addAsciiGlyphs();
 			pacFont.getEffects().add(new ColorEffect(Color.WHITE));
 			pacFont.loadGlyphs();
-			System.out.println("Font Initialized");
 		} catch (FontFormatException | IOException | SlickException e) {
 			System.out.println("Font Not Initialized");
 			e.printStackTrace();
@@ -42,6 +41,7 @@ public class Hud {
 
 		pacFont.drawString(20, 330, Integer.toString(score));
 		pacFont.drawString(140, 330, "HIGH " + Integer.toString(score));
+//		pacFont.drawString(20, 360, Ghost.getMode());
 
 	}
 

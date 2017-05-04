@@ -16,8 +16,12 @@ import org.newdawn.slick.util.ResourceLoader;
 
 public class Pacman extends StateBasedGame{
 	
-	//MAKE SCALABLE GAME
-	//MESS WITH SETTINGS
+	// MAKE SCALABLE GAME
+	// MESS WITH SETTINGS
+	// ADD WIN
+	// MAKE GHOST TELEPORT
+	// ADD GHOST DEATH
+	// ADD HIGH SCORE
 	
 	private static final int SCALE = 2;
 	
@@ -29,7 +33,6 @@ public class Pacman extends StateBasedGame{
 	
 	private static final int MENU = 0;
 	private static final int GAME = 1;
-	
 	
 	public Pacman() {
 		super("Pacman");
