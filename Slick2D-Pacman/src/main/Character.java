@@ -101,4 +101,15 @@ public class Character {
 		return false;
 
 	}
+	
+	protected boolean intersectsGhosts(Rectangle a){
+		
+		for (int i = 0; i < Game.getGhosts().length; i++){
+			if (a.intersects(Game.getGhosts()[i].getColBox())){
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

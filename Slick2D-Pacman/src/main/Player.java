@@ -1,6 +1,8 @@
 package main;
 
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
@@ -20,6 +22,7 @@ public class Player extends Character {
 	private static final int IDLE = 4;
 	
 	private boolean deading;
+	private boolean gotDeaded;
 	private double deadTime;
 	
 	public int dotsEaten;
@@ -30,6 +33,9 @@ public class Player extends Character {
 	public void init() {
 		dead = false;
 		deading = false;
+		gotDeaded = false;
+		
+		dotsEaten = 140;
 
 		x = 10 * Pacman.getTilesize();
 		y = 15 * Pacman.getTilesize();
@@ -54,7 +60,7 @@ public class Player extends Character {
 			System.out.println("y: " + input.getMouseY()/Pacman.getTilesize());
 		}
 		
-		if (!dead){
+		if (!dead && !deading){
 
 			if (input.isKeyPressed(Input.KEY_UP) || input.isKeyPressed(Input.KEY_W)) {
 				nextDir = UP;
@@ -125,15 +131,10 @@ public class Player extends Character {
 					colBox.intersects(Game.getPinkGhost().getColBox()) || 
 					colBox.intersects(Game.getBlueGhost().getColBox()) || 
 					colBox.intersects(Game.getOrangeGhost().getColBox())){
-				deading = true;
-				deadTime = Game.getTimer() + 1.5;
+//				startDeading();
 			}
-			
-		}else if (deading){
-			curAnim = animDeath;
-			if (Game.getTimer() == deadTime){
-				dead = true;
-			}
+		}else if (deading) {
+			die();
 		}
 
 		curAnim.update(delta);
@@ -141,48 +142,52 @@ public class Player extends Character {
 
 	}
 	
+	private void startDeading(){
+		deading = true;
+		if (!gotDeaded) deadTime = Game.getTimer().getTime() + 1.2;
+		gotDeaded = true;
+	}
+	
+	private void die(){
+		curAnim = animDeath;
+		if (Game.getTimer().getTime() >= deadTime){
+			dead = true;
+		}
+	}
+	
 	private void initAnim(){
-		anim = new Animation[8];
+		anim = new Animation[9];
 		
-		Image[] pacImageStart = { Game.getSheet().getSprite(0, 0) };
-		Image[] pacImageIdleUp = { Game.getSheet().getSprite(5, 0) };
-		Image[] pacImageIdleDown = { Game.getSheet().getSprite(7, 0) };
-		Image[] pacImageIdleLeft = { Game.getSheet().getSprite(1, 0) };
-		Image[] pacImageIdleRight = { Game.getSheet().getSprite(3, 0) };
-
-		Image[] pacImageUp = { Game.getSheet().getSprite(0, 0), Game.getSheet().getSprite(5, 0),
-				Game.getSheet().getSprite(6, 0), Game.getSheet().getSprite(5, 0) };
-		Image[] pacImageDown = { Game.getSheet().getSprite(0, 0), Game.getSheet().getSprite(7, 0),
-				Game.getSheet().getSprite(8, 0), Game.getSheet().getSprite(7, 0) };
-		Image[] pacImageLeft = { Game.getSheet().getSprite(0, 0), Game.getSheet().getSprite(1, 0),
-				Game.getSheet().getSprite(2, 0), Game.getSheet().getSprite(1, 0) };
-		Image[] pacImageRight = { Game.getSheet().getSprite(0, 0), Game.getSheet().getSprite(3, 0),
-				Game.getSheet().getSprite(4, 0), Game.getSheet().getSprite(3, 0) };
-
-		Image[] pacImageDeath = { Game.getSheet().getSprite(0, 10), Game.getSheet().getSprite(1, 10),
+		List<Image[]> imageArrays = new ArrayList<Image[]>();
+		
+		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 0) });
+		imageArrays.add(new Image[] {Game.getSheet().getSprite(0, 10), Game.getSheet().getSprite(1, 10),
 				Game.getSheet().getSprite(2, 10), Game.getSheet().getSprite(3, 10), Game.getSheet().getSprite(4, 10),
 				Game.getSheet().getSprite(5, 10), Game.getSheet().getSprite(6, 10), Game.getSheet().getSprite(7, 10),
 				Game.getSheet().getSprite(8, 10), Game.getSheet().getSprite(9, 10), Game.getSheet().getSprite(10, 10),
-				Game.getSheet().getSprite(10, 10), Game.getSheet().getSprite(10, 10), Game.getSheet().getSprite(10, 10)};
-
-		anim[0] = new Animation(pacImageUp, 50, false);
-		anim[1] = new Animation(pacImageDown, 50, false);
-		anim[2] = new Animation(pacImageLeft, 50, false);
-		anim[3] = new Animation(pacImageRight, 50, false);
-
-		anim[4] = new Animation(pacImageIdleUp, 50, false);
-		anim[5] = new Animation(pacImageIdleDown, 50, false);
-		anim[6] = new Animation(pacImageIdleLeft, 50, false);
-		anim[7] = new Animation(pacImageIdleRight, 50, false);
+				Game.getSheet().getSprite(10, 10), Game.getSheet().getSprite(10, 10), Game.getSheet().getSprite(10, 10)});
 		
-		animStart = new Animation(pacImageStart, 50, false);
-		animDeath = new Animation(pacImageDeath, 100, false);
+		for (int i = 1; i < 5; i++){
+			imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 0), Game.getSheet().getSprite(i*2-1, 0), Game.getSheet().getSprite(i*2, 0), Game.getSheet().getSprite(i*2-1, 0)});
+		}
+		
+		for (int i = 1; i < 5; i++){
+			imageArrays.add(new Image[] { Game.getSheet().getSprite(i*2-1, 0) });
+		}
+		
+		for (int i = 0; i < 9; i++){
+			anim[i] = new Animation(imageArrays.get(i), 50, false);
+		}
 
-		curAnim = animStart;
+		curAnim = anim[0];
 	}
 	
 	public boolean isDead(){
 		return dead;
+	}
+	
+	public boolean isDeading(){
+		return deading;
 	}
 
 	public Rectangle getPacBox(){

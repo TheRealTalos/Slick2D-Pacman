@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Font;
 import java.awt.Rectangle;
+import java.util.HashMap;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -15,7 +16,7 @@ import org.newdawn.slick.util.ResourceLoader;
 
 public class Game extends BasicGameState {
 
-	private static int state;
+	private int state;
 	
 	private static final int RED = 0;;
 	private static final int PINK = 1;
@@ -27,16 +28,14 @@ public class Game extends BasicGameState {
 	private static SpriteSheet sheet;
 	private static Dots dots = new Dots();
 	private static Hud hud = new Hud();
-	private static Ghost redGhost = new Ghost(RED);
-	private static Ghost pinkGhost = new Ghost(PINK);
-	private static Ghost blueGhost = new Ghost(BLUE);
-	private static Ghost orangeGhost = new Ghost(ORANGE);
-
+	private static Ghost[] ghosts = new Ghost[4];
+	
 	public static Rectangle[] walls = new Rectangle[202];
 	public static Rectangle[] semiWalls = new Rectangle[1];
 	
-	private static double timer;
-	private static double s;
+	private static Timer timer = new Timer();
+	
+	private static boolean win = false;
 
 	public Game(int state) {
 		this.state = state;
@@ -49,13 +48,14 @@ public class Game extends BasicGameState {
 				Pacman.getTilesize());
 
 		player.init();
-		redGhost.init();
-		pinkGhost.init();
-		blueGhost.init();
-		orangeGhost.init();
+		for (int i = 0; i < ghosts.length; i++){
+			ghosts[i] = new Ghost(i);
+			ghosts[i].init();
+		}
 		dots.init();
 		hud.init();
-
+		timer.init();
+		
 		int w = 0;
 		int sw = 0;
 
@@ -73,8 +73,6 @@ public class Game extends BasicGameState {
 				}
 			}
 		}
-		s = 1;
-		s = s/60;
 	}
 
 	@Override
@@ -82,24 +80,27 @@ public class Game extends BasicGameState {
 		map.render(0, 0);
 		dots.render();
 		player.render(g);
-		redGhost.render();
-		pinkGhost.render();
-		blueGhost.render();
-		orangeGhost.render();
+		for (int i = 0; i < ghosts.length; i++){
+			ghosts[i].render();
+		}
 		hud.render(g);
 	}
 
 	@Override
-	public void update(GameContainer gc, StateBasedGame arg1, int delta) throws SlickException {
-		if (!player.isDead()){
-			player.update(gc, delta);
-			redGhost.update(delta);
-			pinkGhost.update(delta);
-			blueGhost.update(delta);
-			orangeGhost.update(delta);
+	public void update(GameContainer gc, StateBasedGame sbc, int delta) throws SlickException {
+		if (!win){
+			if (!player.isDead()) player.update(gc, delta);
+			if (!player.isDeading()){
+				for (int i = 0; i < ghosts.length; i++){
+					ghosts[i].update(delta);
+				}
+			}
+			dots.update();
+			timer.update();
 		}
-		dots.update();
-		timer += s;
+		if (player.dotsEaten == 146){
+			init(gc, sbc);
+		}
 	}
 
 	@Override
@@ -108,22 +109,26 @@ public class Game extends BasicGameState {
 	}
 	
 	public static Ghost getRedGhost() {
-		return redGhost;
+		return ghosts[0];
 	}
 
 	public static Ghost getPinkGhost() {
-		return pinkGhost;
+		return ghosts[1];
 	}
 
 	public static Ghost getBlueGhost() {
-		return blueGhost;
+		return ghosts[2];
 	}
 
 	public static Ghost getOrangeGhost() {
-		return orangeGhost;
+		return ghosts[3];
+	}
+	
+	public static Ghost[] getGhosts(){
+		return ghosts;
 	}
 
-	public static Double getTimer(){
+	public static Timer getTimer(){
 		return timer;
 	}
 

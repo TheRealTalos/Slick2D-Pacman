@@ -37,7 +37,6 @@ public class Ghost extends Character {
 	}
 
 	public void init() {
-
 		initGhosts();
 		initAnim();
 
@@ -83,7 +82,7 @@ public class Ghost extends Character {
 				dists[3] = x - scatterPointX * Pacman.getTilesize();
 				
 			} else if (mode == SCARED){
-				if (Game.getTimer() < endScared){
+				if (Game.getTimer().getTime() < endScared){
 					Random r = new Random();
 					
 					ArrayList<Integer> di = wouldNotIntersectWalls();
@@ -279,19 +278,19 @@ public class Ghost extends Character {
 	}
 	
 	public void setMode() {
-		if (Game.getTimer() < 7){
+		if (Game.getTimer().getTime() < 7){
 			mode = (SCATTER);
-		}else if (Game.getTimer() < 27){
+		}else if (Game.getTimer().getTime() < 27){
 			mode = (CHASE);
-		}else if (Game.getTimer() < 34){
+		}else if (Game.getTimer().getTime() < 34){
 			mode = (SCATTER);
-		}else if (Game.getTimer() < 54){
+		}else if (Game.getTimer().getTime() < 54){
 			mode = (CHASE);
-		}else if (Game.getTimer() < 59){
+		}else if (Game.getTimer().getTime() < 59){
 			mode = (SCATTER);
-		}else if (Game.getTimer() < 79){
+		}else if (Game.getTimer().getTime() < 79){
 			mode = (CHASE);
-		}else if (Game.getTimer() < 84){
+		}else if (Game.getTimer().getTime() < 84){
 			mode = (SCATTER);
 		}else{
 			mode = (CHASE);
@@ -303,7 +302,7 @@ public class Ghost extends Character {
 		setLastDir(dir);
 		mode = m;
 		if (m == SCARED){
-			endScared = (int)(Game.getTimer() + 10);
+			endScared = (int)(Game.getTimer().getTime() + 10);
 		}
 	}
 	

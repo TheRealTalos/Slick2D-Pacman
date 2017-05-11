@@ -41,8 +41,6 @@ public class Hud {
 
 		pacFont.drawString(20, 330, Integer.toString(score));
 		pacFont.drawString(140, 330, "HIGH " + Integer.toString(score));
-//		pacFont.drawString(20, 360, Ghost.getMode());
 
 	}
-
 }

@@ -10,7 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class Menu extends BasicGameState{
 	
-	private static int STATE;
+	private int STATE;
 	
 	private static Image menu;
 	
