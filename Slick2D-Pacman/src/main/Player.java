@@ -35,7 +35,7 @@ public class Player extends Character {
 		deading = false;
 		gotDeaded = false;
 		
-		dotsEaten = 140;
+		dotsEaten = 0;
 
 		x = 10 * Pacman.getTilesize();
 		y = 15 * Pacman.getTilesize();
@@ -131,7 +131,7 @@ public class Player extends Character {
 					colBox.intersects(Game.getPinkGhost().getColBox()) || 
 					colBox.intersects(Game.getBlueGhost().getColBox()) || 
 					colBox.intersects(Game.getOrangeGhost().getColBox())){
-//				startDeading();
+				startDeading();
 			}
 		}else if (deading) {
 			die();
@@ -149,23 +149,16 @@ public class Player extends Character {
 	}
 	
 	private void die(){
-		curAnim = animDeath;
+		curAnim = anim[9];
 		if (Game.getTimer().getTime() >= deadTime){
 			dead = true;
 		}
 	}
 	
 	private void initAnim(){
-		anim = new Animation[9];
+		anim = new Animation[10];
 		
 		List<Image[]> imageArrays = new ArrayList<Image[]>();
-		
-		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 0) });
-		imageArrays.add(new Image[] {Game.getSheet().getSprite(0, 10), Game.getSheet().getSprite(1, 10),
-				Game.getSheet().getSprite(2, 10), Game.getSheet().getSprite(3, 10), Game.getSheet().getSprite(4, 10),
-				Game.getSheet().getSprite(5, 10), Game.getSheet().getSprite(6, 10), Game.getSheet().getSprite(7, 10),
-				Game.getSheet().getSprite(8, 10), Game.getSheet().getSprite(9, 10), Game.getSheet().getSprite(10, 10),
-				Game.getSheet().getSprite(10, 10), Game.getSheet().getSprite(10, 10), Game.getSheet().getSprite(10, 10)});
 		
 		for (int i = 1; i < 5; i++){
 			imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 0), Game.getSheet().getSprite(i*2-1, 0), Game.getSheet().getSprite(i*2, 0), Game.getSheet().getSprite(i*2-1, 0)});
@@ -174,12 +167,19 @@ public class Player extends Character {
 		for (int i = 1; i < 5; i++){
 			imageArrays.add(new Image[] { Game.getSheet().getSprite(i*2-1, 0) });
 		}
+
+		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 0) });
+		imageArrays.add(new Image[] {Game.getSheet().getSprite(0, 10), Game.getSheet().getSprite(1, 10),
+				Game.getSheet().getSprite(2, 10), Game.getSheet().getSprite(3, 10), Game.getSheet().getSprite(4, 10),
+				Game.getSheet().getSprite(5, 10), Game.getSheet().getSprite(6, 10), Game.getSheet().getSprite(7, 10),
+				Game.getSheet().getSprite(8, 10), Game.getSheet().getSprite(9, 10), Game.getSheet().getSprite(10, 10),
+				Game.getSheet().getSprite(10, 10), Game.getSheet().getSprite(10, 10), Game.getSheet().getSprite(10, 10)});
 		
-		for (int i = 0; i < 9; i++){
+		for (int i = 0; i < 10; i++){
 			anim[i] = new Animation(imageArrays.get(i), 50, false);
 		}
-
-		curAnim = anim[0];
+		
+		curAnim = anim[8];
 	}
 	
 	public boolean isDead(){
