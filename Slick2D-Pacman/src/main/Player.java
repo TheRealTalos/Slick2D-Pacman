@@ -39,6 +39,8 @@ public class Player extends Character {
 
 		x = 10 * Pacman.getTilesize();
 		y = 15 * Pacman.getTilesize();
+		
+		dir = NULL;
 
 		initAnim();
 
@@ -60,7 +62,7 @@ public class Player extends Character {
 			System.out.println("y: " + input.getMouseY()/Pacman.getTilesize());
 		}
 		
-		if (!dead && !deading){
+		if (!deading){
 
 			if (input.isKeyPressed(Input.KEY_UP) || input.isKeyPressed(Input.KEY_W)) {
 				nextDir = UP;
@@ -127,19 +129,22 @@ public class Player extends Character {
 					y = 144.31007f;
 			}
 			
-			if (colBox.intersects(Game.getRedGhost().getColBox()) || 
-					colBox.intersects(Game.getPinkGhost().getColBox()) || 
-					colBox.intersects(Game.getBlueGhost().getColBox()) || 
-					colBox.intersects(Game.getOrangeGhost().getColBox())){
-				startDeading();
+			for (int i = 0; i < 4; i++){
+				if (colBox.intersects(Game.getGhosts()[i].getColBox()) && Game.getGhosts()[i].getMode() != Ghost.DEAD){
+					if (Game.getGhosts()[i].getMode() != Ghost.SCARED){
+						startDeading();
+					}else{
+						Game.getGhosts()[i].die();
+					}
+				}
 			}
-		}else if (deading) {
+
+		}else{
 			die();
 		}
 
 		curAnim.update(delta);
 		colBox.setLocation((int) x, (int) y);
-
 	}
 	
 	private void startDeading(){
