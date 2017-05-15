@@ -44,7 +44,7 @@ public class Ghost extends Character {
 		initGhosts();
 		initAnim();
 
-		colBox = new Rectangle((int) x, (int) y, Pacman.getTilesize(), Pacman.getTilesize());
+		moveBox = new Rectangle((int) x, (int) y, Pacman.getTilesize(), Pacman.getTilesize());
 
 	}
 
@@ -53,8 +53,8 @@ public class Ghost extends Character {
 	}
 
 	public void update(long delta) {
-		double pacX = Game.getPlayer().getColBox().getMinX();
-		double pacY = Game.getPlayer().getColBox().getMinY();
+		double pacX = Game.getPlayer().getMoveBox().getMinX();
+		double pacY = Game.getPlayer().getMoveBox().getMinY();
 
 		if (mode != SCARED && SPEED != 1) {
 			SPEED = 1f;
@@ -221,21 +221,21 @@ public class Ghost extends Character {
 			dir = NULL;
 		}
 
-		if (colBox.getMinX() < 0 - Pacman.getTilesize() / 2) {
+		if (moveBox.getMinX() < 0 - Pacman.getTilesize() / 2) {
 			if (dir == LEFT)
 				x = Pacman.getWorldsize() + Pacman.getTilesize() / 2;
 			if (y != 144.31007)
 				y = 144.31007f;
 		}
 
-		if (colBox.getMaxX() > Pacman.getWorldsize() + Pacman.getTilesize() / 2) {
+		if (moveBox.getMaxX() > Pacman.getWorldsize() + Pacman.getTilesize() / 2) {
 			if (dir == RIGHT)
 				x = 0 - Pacman.getTilesize() / 2;
 			if (y != 144.31007)
 				y = 144.31007f;
 		}
 
-		colBox.setLocation((int) x, (int) y);
+		moveBox.setLocation((int) x, (int) y);
 		curAnim.update(delta);
 	}
 

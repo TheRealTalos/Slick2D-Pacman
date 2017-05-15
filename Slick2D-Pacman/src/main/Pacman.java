@@ -18,7 +18,6 @@ public class Pacman extends StateBasedGame{
 	
 	// MAKE SCALABLE GAME
 	// MESS WITH SETTINGS
-	// ADD WIN
 	// MAKE GHOST TELEPORT
 	// ADD GHOST DEATH
 	// ADD HIGH SCORE

@@ -16,9 +16,6 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 
 public class Player extends Character {
-
-	private Animation animStart, animDeath;
-	
 	private static final int IDLE = 4;
 	
 	private boolean deading;
@@ -44,7 +41,8 @@ public class Player extends Character {
 
 		initAnim();
 
-		colBox = new Rectangle(Pacman.getTilesize(), Pacman.getTilesize());
+		moveBox = new Rectangle(Pacman.getTilesize(), Pacman.getTilesize());
+		fightBox = new Rectangle(2*Pacman.getTilesize()/4, 2*Pacman.getTilesize()/4);
 
 	}
 
@@ -105,13 +103,13 @@ public class Player extends Character {
 						if (dir == LEFT) x -= SPEED; 
 						if (dir == RIGHT) x += SPEED; 
 					}else {
-						curAnim = anim[i+4];
+						curAnim = anim[IDLE+i];
 						dir = NULL;
 					}
 				}
 			}
 	
-			if (colBox.getMinX() < 0 - Pacman.getTilesize() / 2) {
+			if (moveBox.getMinX() < 0 - Pacman.getTilesize() / 2) {
 				if (dir == LEFT)
 					x = Pacman.getWorldsize() + Pacman.getTilesize() / 2;
 				if (curAnim == anim[UP] || curAnim == anim[DOWN] || curAnim == anim[IDLE + UP] || curAnim == anim[IDLE + DOWN])
@@ -120,7 +118,7 @@ public class Player extends Character {
 					y = 144.31007f;
 			}
 	
-			if (colBox.getMaxX() > Pacman.getWorldsize() + Pacman.getTilesize() / 2) {
+			if (moveBox.getMaxX() > Pacman.getWorldsize() + Pacman.getTilesize() / 2) {
 				if (dir == RIGHT)
 					x = 0 - Pacman.getTilesize() / 2;
 				if (curAnim == anim[UP] || curAnim == anim[DOWN] || curAnim == anim[IDLE + UP] || curAnim == anim[IDLE + DOWN])
@@ -130,7 +128,7 @@ public class Player extends Character {
 			}
 			
 			for (int i = 0; i < 4; i++){
-				if (colBox.intersects(Game.getGhosts()[i].getColBox()) && Game.getGhosts()[i].getMode() != Ghost.DEAD){
+				if (moveBox.intersects(Game.getGhosts()[i].getFightBox()) && Game.getGhosts()[i].getMode() != Ghost.DEAD){
 					if (Game.getGhosts()[i].getMode() != Ghost.SCARED){
 						startDeading();
 					}else{
@@ -144,12 +142,13 @@ public class Player extends Character {
 		}
 
 		curAnim.update(delta);
-		colBox.setLocation((int) x, (int) y);
+		moveBox.setLocation((int) x, (int) y);
+		fightBox.setLocation((int) x + Pacman.getTilesize()/4, (int) y + Pacman.getTilesize()/44);
 	}
 	
 	private void startDeading(){
 		deading = true;
-		if (!gotDeaded) deadTime = Game.getTimer().getTime() + 1.2;
+		if (!gotDeaded) deadTime = Game.getTimer().getTime() + 0.55;
 		gotDeaded = true;
 	}
 	
@@ -174,11 +173,15 @@ public class Player extends Character {
 		}
 
 		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 0) });
-		imageArrays.add(new Image[] {Game.getSheet().getSprite(0, 10), Game.getSheet().getSprite(1, 10),
-				Game.getSheet().getSprite(2, 10), Game.getSheet().getSprite(3, 10), Game.getSheet().getSprite(4, 10),
-				Game.getSheet().getSprite(5, 10), Game.getSheet().getSprite(6, 10), Game.getSheet().getSprite(7, 10),
-				Game.getSheet().getSprite(8, 10), Game.getSheet().getSprite(9, 10), Game.getSheet().getSprite(10, 10),
-				Game.getSheet().getSprite(10, 10), Game.getSheet().getSprite(10, 10), Game.getSheet().getSprite(10, 10)});
+		
+		Image[] deathImage = new Image[20];
+		
+		imageArrays.add(deathImage);
+		
+		for (int i = 0; i < deathImage.length; i+=2){
+			deathImage[i] = Game.getSheet().getSprite(i, 10);
+			deathImage[i+1] = Game.getSheet().getSprite(i, 10);
+		}
 		
 		for (int i = 0; i < 10; i++){
 			anim[i] = new Animation(imageArrays.get(i), 50, false);
@@ -196,6 +199,6 @@ public class Player extends Character {
 	}
 
 	public Rectangle getPacBox(){
-		return colBox;
+		return moveBox;
 	}
 }

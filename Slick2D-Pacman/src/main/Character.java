@@ -26,7 +26,8 @@ public class Character {
 	protected Animation curAnim;
 	protected Animation[] anim;
 	
-	protected Rectangle colBox;
+	protected Rectangle moveBox;
+	protected Rectangle fightBox;
 
 	public Character() {
 	}
@@ -43,8 +44,12 @@ public class Character {
 		return dir;
 	}
 	
-	protected Rectangle getColBox() {
-		return colBox;
+	protected Rectangle getMoveBox() {
+		return moveBox;
+	}
+	
+	protected Rectangle getFightBox() {
+		return fightBox;
 	}
 
 	protected boolean wouldIntersect(int d, Rectangle a, Rectangle b) {
@@ -74,8 +79,8 @@ public class Character {
 
 	protected boolean wouldIntersectWalls(int d) {
 		
-		double x = colBox.getMinX();
-		double y = colBox.getMinY();
+		double x = moveBox.getMinX();
+		double y = moveBox.getMinY();
 
 		Rectangle ru = new Rectangle((int) x, (int) (y - SPEED), Pacman.getTilesize(), Pacman.getTilesize());
 		Rectangle rd = new Rectangle((int) x, (int) (y + SPEED), Pacman.getTilesize(), Pacman.getTilesize());
@@ -105,7 +110,7 @@ public class Character {
 	protected boolean intersectsGhosts(Rectangle a){
 		
 		for (int i = 0; i < Game.getGhosts().length; i++){
-			if (a.intersects(Game.getGhosts()[i].getColBox())){
+			if (a.intersects(Game.getGhosts()[i].getMoveBox())){
 				return true;
 			}
 		}
