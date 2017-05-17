@@ -1,4 +1,4 @@
-package main;
+package entities;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -14,6 +14,9 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
+
+import main.Main;
+import states.Game;
 
 public class Player extends Character {
 	private static final int IDLE = 4;
@@ -34,15 +37,15 @@ public class Player extends Character {
 		
 		dotsEaten = 0;
 
-		x = 10 * Pacman.getTilesize();
-		y = 15 * Pacman.getTilesize();
+		x = 10 * Main.getTilesize();
+		y = 15 * Main.getTilesize();
 		
 		dir = NULL;
 
 		initAnim();
 
-		moveBox = new Rectangle(Pacman.getTilesize(), Pacman.getTilesize());
-		fightBox = new Rectangle(2*Pacman.getTilesize()/4, 2*Pacman.getTilesize()/4);
+		moveBox = new Rectangle(Main.getTilesize(), Main.getTilesize());
+		fightBox = new Rectangle(Main.getTilesize()/2, Main.getTilesize()/2);
 
 	}
 
@@ -56,8 +59,8 @@ public class Player extends Character {
 		Input input = container.getInput();
 
 		if (input.isMousePressed(0)) {
-			System.out.println("x: " + input.getMouseX()/Pacman.getTilesize());
-			System.out.println("y: " + input.getMouseY()/Pacman.getTilesize());
+			System.out.println("x: " + input.getMouseX()/Main.getTilesize());
+			System.out.println("y: " + input.getMouseY()/Main.getTilesize());
 		}
 		
 		if (!deading){
@@ -109,18 +112,18 @@ public class Player extends Character {
 				}
 			}
 	
-			if (moveBox.getMinX() < 0 - Pacman.getTilesize() / 2) {
+			if (moveBox.getMinX() < 0 - Main.getTilesize() / 2) {
 				if (dir == LEFT)
-					x = Pacman.getWorldsize() + Pacman.getTilesize() / 2;
+					x = Main.getWorldsize() + Main.getTilesize() / 2;
 				if (curAnim == anim[UP] || curAnim == anim[DOWN] || curAnim == anim[IDLE + UP] || curAnim == anim[IDLE + DOWN])
 					dir = RIGHT;
 				if (y != 144.31007)
 					y = 144.31007f;
 			}
 	
-			if (moveBox.getMaxX() > Pacman.getWorldsize() + Pacman.getTilesize() / 2) {
+			if (moveBox.getMaxX() > Main.getWorldsize() + Main.getTilesize() / 2) {
 				if (dir == RIGHT)
-					x = 0 - Pacman.getTilesize() / 2;
+					x = 0 - Main.getTilesize() / 2;
 				if (curAnim == anim[UP] || curAnim == anim[DOWN] || curAnim == anim[IDLE + UP] || curAnim == anim[IDLE + DOWN])
 					dir = LEFT;
 				if (y != 144.31007)
@@ -128,7 +131,7 @@ public class Player extends Character {
 			}
 			
 			for (int i = 0; i < 4; i++){
-				if (moveBox.intersects(Game.getGhosts()[i].getFightBox()) && Game.getGhosts()[i].getMode() != Ghost.DEAD){
+				if (intersectsGhosts(fightBox) && Game.getGhosts()[i].getMode() != Ghost.DEAD){
 					if (Game.getGhosts()[i].getMode() != Ghost.SCARED){
 						startDeading();
 					}else{
@@ -143,7 +146,7 @@ public class Player extends Character {
 
 		curAnim.update(delta);
 		moveBox.setLocation((int) x, (int) y);
-		fightBox.setLocation((int) x + Pacman.getTilesize()/4, (int) y + Pacman.getTilesize()/44);
+		fightBox.setLocation((int) x + Main.getTilesize()/4, (int) y + Main.getTilesize()/4);
 	}
 	
 	private void startDeading(){

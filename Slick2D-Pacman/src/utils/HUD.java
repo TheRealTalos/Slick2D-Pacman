@@ -1,4 +1,4 @@
-package main;
+package utils;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -11,13 +11,13 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.util.ResourceLoader;
 
-public class Hud {
+public class HUD {
 
 	public static int score = 0;
 
 	private static UnicodeFont pacFont;
 
-	public Hud() {
+	public HUD() {
 
 	}
 

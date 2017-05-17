@@ -1,8 +1,12 @@
-package main;
+package entities;
 
 import java.awt.Rectangle;
+import java.util.ArrayList;
 
 import org.newdawn.slick.Animation;
+
+import main.Main;
+import states.Game;
 
 public class Character {
 
@@ -58,34 +62,42 @@ public class Character {
 		double y = a.getMinY();
 
 		if (d == UP) {
-			Rectangle r = new Rectangle((int) x, (int) (y - SPEED), Pacman.getTilesize(), Pacman.getTilesize());
+			Rectangle r = new Rectangle((int) x, (int) (y - SPEED), Main.getTilesize(), Main.getTilesize());
 			if (r.intersects(b))
 				return true;
 		} else if (d == DOWN) {
-			Rectangle r = new Rectangle((int) x, (int) (y + SPEED), Pacman.getTilesize(), Pacman.getTilesize());
+			Rectangle r = new Rectangle((int) x, (int) (y + SPEED), Main.getTilesize(), Main.getTilesize());
 			if (r.intersects(b))
 				return true;
 		} else if (d == LEFT) {
-			Rectangle r = new Rectangle((int) (x - SPEED), (int) y, Pacman.getTilesize(), Pacman.getTilesize());
+			Rectangle r = new Rectangle((int) (x - SPEED), (int) y, Main.getTilesize(), Main.getTilesize());
 			if (r.intersects(b))
 				return true;
 		} else if (d == RIGHT) {
-			Rectangle r = new Rectangle((int) (x + SPEED), (int) y, Pacman.getTilesize(), Pacman.getTilesize());
+			Rectangle r = new Rectangle((int) (x + SPEED), (int) y, Main.getTilesize(), Main.getTilesize());
 			if (r.intersects(b))
 				return true;
 		}
 		return false;
 	}
 
+	protected boolean insideBounds(){
+		
+		if (x > 0 && x < Main.getWorldsize())
+			return true;
+		
+		return false;
+	}
+	
 	protected boolean wouldIntersectWalls(int d) {
 		
 		double x = moveBox.getMinX();
 		double y = moveBox.getMinY();
 
-		Rectangle ru = new Rectangle((int) x, (int) (y - SPEED), Pacman.getTilesize(), Pacman.getTilesize());
-		Rectangle rd = new Rectangle((int) x, (int) (y + SPEED), Pacman.getTilesize(), Pacman.getTilesize());
-		Rectangle rl = new Rectangle((int) (x - SPEED), (int) y, Pacman.getTilesize(), Pacman.getTilesize());
-		Rectangle rr = new Rectangle((int) (x + SPEED), (int) y, Pacman.getTilesize(), Pacman.getTilesize());
+		Rectangle ru = new Rectangle((int) x, (int) (y - SPEED), Main.getTilesize(), Main.getTilesize());
+		Rectangle rd = new Rectangle((int) x, (int) (y + SPEED), Main.getTilesize(), Main.getTilesize());
+		Rectangle rl = new Rectangle((int) (x - SPEED), (int) y, Main.getTilesize(), Main.getTilesize());
+		Rectangle rr = new Rectangle((int) (x + SPEED), (int) y, Main.getTilesize(), Main.getTilesize());
 
 		for (int i = 0; i < Game.walls.length; i++) {
 			if (ru.intersects(Game.walls[i]) && d == UP)
@@ -104,6 +116,20 @@ public class Character {
 		}
 		
 		return false;
+
+	}
+	
+	protected ArrayList<Integer> wouldNotIntersectWalls() {
+
+		ArrayList<Integer> dirs = new ArrayList<Integer>();
+
+		for (int i = 0; i < 4; i++) {
+			if (!wouldIntersectWalls(i) && lastDir != i) {
+				dirs.add(i);
+			}
+		}
+
+		return dirs;
 
 	}
 	

@@ -1,4 +1,4 @@
-package main;
+package states;
 
 import java.awt.Font;
 import java.awt.Rectangle;
@@ -14,6 +14,13 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.util.ResourceLoader;
 
+import entities.Dots;
+import entities.Ghost;
+import entities.Player;
+import main.Main;
+import utils.HUD;
+import utils.Timer;
+
 public class Game extends BasicGameState {
 
 	private int state;
@@ -27,7 +34,7 @@ public class Game extends BasicGameState {
 	private static Player player = new Player();
 	private static SpriteSheet sheet;
 	private static Dots dots = new Dots();
-	private static Hud hud = new Hud();
+	private static HUD hud = new HUD();
 	private static Ghost[] ghosts = new Ghost[4];
 	
 	public static Rectangle[] walls = new Rectangle[202];
@@ -44,8 +51,8 @@ public class Game extends BasicGameState {
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		map = new TiledMap("res/maps/map.tmx");
-		sheet = new SpriteSheet(new Image("res/spritesheets/SpriteSheet.png"), Pacman.getTilesize(),
-				Pacman.getTilesize());
+		sheet = new SpriteSheet(new Image("res/spritesheets/SpriteSheet.png"), Main.getTilesize(),
+				Main.getTilesize());
 
 		player.init();
 		for (int i = 0; i < ghosts.length; i++){
@@ -59,16 +66,16 @@ public class Game extends BasicGameState {
 		int w = 0;
 		int sw = 0;
 
-		for (int y = 0; y < Pacman.getWorldsize() / Pacman.getTilesize(); y++) {
-			for (int x = 0; x < Pacman.getWorldsize() / Pacman.getTilesize(); x++) {
+		for (int y = 0; y < Main.getWorldsize() / Main.getTilesize(); y++) {
+			for (int x = 0; x < Main.getWorldsize() / Main.getTilesize(); x++) {
 				if (map.getTileProperty(map.getTileId(x, y, 0), "Wall", "nope").equals("true")) {
-					walls[w] = new Rectangle(x * Pacman.getTilesize(), y * Pacman.getTilesize(), Pacman.getTilesize(),
-							Pacman.getTilesize());
+					walls[w] = new Rectangle(x * Main.getTilesize(), y * Main.getTilesize(), Main.getTilesize(),
+							Main.getTilesize());
 					w++;
 				}
 				if (map.getTileProperty(map.getTileId(x, y, 0), "SemiWall", "nope").equals("true")) {
-					semiWalls[sw] = new Rectangle(x * Pacman.getTilesize(), y * Pacman.getTilesize(), Pacman.getTilesize(),
-							Pacman.getTilesize());
+					semiWalls[sw] = new Rectangle(x * Main.getTilesize(), y * Main.getTilesize(), Main.getTilesize(),
+							Main.getTilesize());
 					sw++;
 				}
 			}

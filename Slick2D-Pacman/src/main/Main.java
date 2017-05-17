@@ -14,12 +14,15 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.util.ResourceLoader;
 
-public class Pacman extends StateBasedGame{
+import states.Game;
+import states.Menu;
+
+public class Main extends StateBasedGame{
 	
 	// MAKE SCALABLE GAME
 	// MESS WITH SETTINGS
-	// MAKE GHOST TELEPORT
 	// ADD GHOST DEATH
+		//WHERE ARE THEY NOT BEING ALLOWED TO CUM BACK IN
 	// ADD HIGH SCORE
 	
 	private static final int SCALE = 2;
@@ -33,7 +36,7 @@ public class Pacman extends StateBasedGame{
 	private static final int MENU = 0;
 	private static final int GAME = 1;
 	
-	public Pacman() {
+	public Main() {
 		super("Pacman");
 		this.addState(new Menu(MENU));
 		this.addState(new Game(GAME));
@@ -41,7 +44,7 @@ public class Pacman extends StateBasedGame{
 	
 	public static void main(String[] args){
 		try{
-			AppGameContainer app = new AppGameContainer(new Pacman());
+			AppGameContainer app = new AppGameContainer(new Main());
 			app.setDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, false);
 			app.setTargetFrameRate(60);
 			app.start();

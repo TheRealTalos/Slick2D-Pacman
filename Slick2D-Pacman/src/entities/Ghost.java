@@ -1,4 +1,4 @@
-package main;
+package entities;
 
 import java.util.List;
 import java.util.Random;
@@ -9,6 +9,9 @@ import java.util.Collections;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
+
+import main.Main;
+import states.Game;
 
 public class Ghost extends Character {
 	private int mode;
@@ -35,6 +38,8 @@ public class Ghost extends Character {
 	private int scatterPointY = 0;
 
 	private int releaseDots = 0;
+	
+	public double[] dists = new double[4];
 
 	public Ghost(int colour) {
 		this.colour = colour;
@@ -43,9 +48,9 @@ public class Ghost extends Character {
 	public void init() {
 		initGhosts();
 		initAnim();
-
-		moveBox = new Rectangle((int) x, (int) y, Pacman.getTilesize(), Pacman.getTilesize());
-
+		
+		moveBox = new Rectangle((int) x, (int) y, Main.getTilesize(), Main.getTilesize());
+		fightBox = new Rectangle((int) x, (int) y, Main.getTilesize()/2, Main.getTilesize()/2);
 	}
 
 	public void render() {
@@ -68,22 +73,17 @@ public class Ghost extends Character {
 		}
 
 		if (dir == NULL && Game.getPlayer().dotsEaten >= releaseDots) {
-
-			double[] dists = new double[4];
 			List<Double> sortedDists = new ArrayList<Double>();
 
 			if (mode == LEAVE) {
 				List<Integer> p = wouldNotIntersectWalls();
 				dir = p.get(0);
-				if (y <= 7 * Pacman.getTilesize()) {
+				if (y <= 7 * Main.getTilesize()) {
 					setMode();
 				}
 			}
 			if (mode == SCATTER) {
-				dists[0] = scatterPointY * Pacman.getTilesize() - y;
-				dists[1] = y - scatterPointY * Pacman.getTilesize();
-				dists[2] = scatterPointX * Pacman.getTilesize() - x;
-				dists[3] = x - scatterPointX * Pacman.getTilesize();
+				setDists(scatterPointX * Main.getTilesize(), scatterPointY * Main.getTilesize());
 
 			} else if (mode == SCARED) {
 				if (Game.getTimer().getTime() < endScared) {
@@ -100,20 +100,17 @@ public class Ghost extends Character {
 				}
 
 			} else if (mode == DEAD) {
-				dists[0] = startY * Pacman.getTilesize() - y;
-				dists[1] = y - startY * Pacman.getTilesize();
-				dists[2] = startX * Pacman.getTilesize() - x;
-				dists[3] = x - startX * Pacman.getTilesize();
+				setDists(startX * Main.getTilesize(), startY * Main.getTilesize());
+				if (inBox()){
+					setMode();
+				}
 
 			} else if (mode == CHASE) {
 				int q = 0;
-				int n = q * Pacman.getTilesize();
+				int n = q * Main.getTilesize();
 
 				if (colour == RED) {
-					dists[0] = (pacY - y);
-					dists[1] = (y - pacY);
-					dists[2] = (pacX - x);
-					dists[3] = (x - pacX);
+					setDists((int)pacX, (int)pacY);
 
 				} else if (colour == PINK) {
 					if (Game.getPlayer().getDir() == UP || Game.getPlayer().getDir() == LEFT)
@@ -121,10 +118,7 @@ public class Ghost extends Character {
 					else if (Game.getPlayer().getDir() == DOWN || Game.getPlayer().getDir() == RIGHT)
 						q = +2;
 
-					dists[0] = (pacY - y) + n;
-					dists[1] = (y - pacY) + n;
-					dists[2] = (pacX - x) + n;
-					dists[3] = (x - pacX) + n;
+					setDists((int)pacX, (int)pacY, n);
 
 				} else if (colour == BLUE) {
 					if (Game.getPlayer().getDir() == UP || Game.getPlayer().getDir() == LEFT)
@@ -132,30 +126,21 @@ public class Ghost extends Character {
 					else if (Game.getPlayer().getDir() == DOWN || Game.getPlayer().getDir() == RIGHT)
 						q = +1;
 
-					dists[0] = (pacY - Game.getRedGhost().getY()) + n;
-					dists[1] = (Game.getRedGhost().getY() - pacY) + n;
-					dists[2] = (pacX - Game.getRedGhost().getX()) + n;
-					dists[3] = (Game.getRedGhost().getX() - pacX) + n;
+					setDists((int)pacX, (int)pacY, (int)Game.getRedGhost().getX(), (int)Game.getRedGhost().getY());
 
 					for (int i = 0; i < dists.length; i++) {
 						dists[i] *= 2;
 					}
 
 				} else if (colour == ORANGE) {
-					dists[0] = (pacY - y);
-					dists[1] = (y - pacY);
-					dists[2] = (pacX - x);
-					dists[3] = (x - pacX);
+					setDists((int)pacX, (int)pacY);
 					ArrayList<Double> k = new ArrayList<Double>();
 					for (int i = 0; i < dists.length; i++) {
 						k.add(dists[i]);
 					}
 					Collections.sort(k, Collections.reverseOrder());
-					if (Math.abs(k.get(k.size() - 1)) < 8 * Pacman.getTilesize()) {
-						dists[0] = scatterPointY * Pacman.getTilesize() - y;
-						dists[1] = y - scatterPointY * Pacman.getTilesize();
-						dists[2] = scatterPointX * Pacman.getTilesize() - x;
-						dists[3] = x - scatterPointX * Pacman.getTilesize();
+					if (Math.abs(k.get(k.size() - 1)) < 8 * Main.getTilesize()) {
+						setDists(scatterPointX * Main.getTilesize(), scatterPointY * Main.getTilesize());
 					}
 				}
 			}
@@ -207,38 +192,66 @@ public class Ghost extends Character {
 			}
 		}
 
-		// ArrayList<Integer> n = wouldNotIntersectWalls();
-		// if (n.size() >= 2){
-		// lastDir = setLastDir(dir);
-		// dir = NULL;
-		// }
+//		 ArrayList<Integer> n = wouldNotIntersectWalls();
+//		 if (n.size() >= 2){
+//			 lastDir = setLastDir(dir);
+//			 dir = NULL;
+//		 }
+		
 		int n = 0;
 		for (int i = 0; i < 4; i++)
 			if (!wouldIntersectWalls(i))
 				n++;
-		if (n >= 2) {
+		if (n >= 2 && insideBounds()) {
 			lastDir = setLastDir(dir);
 			dir = NULL;
 		}
 
-		if (moveBox.getMinX() < 0 - Pacman.getTilesize() / 2) {
+		if (moveBox.getMinX() < 0 - Main.getTilesize() / 2) {
 			if (dir == LEFT)
-				x = Pacman.getWorldsize() + Pacman.getTilesize() / 2;
+				x = Main.getWorldsize() + Main.getTilesize() / 2;
 			if (y != 144.31007)
 				y = 144.31007f;
 		}
 
-		if (moveBox.getMaxX() > Pacman.getWorldsize() + Pacman.getTilesize() / 2) {
+		if (moveBox.getMaxX() > Main.getWorldsize() + Main.getTilesize() / 2) {
 			if (dir == RIGHT)
-				x = 0 - Pacman.getTilesize() / 2;
+				x = 0 - Main.getTilesize() / 2;
 			if (y != 144.31007)
 				y = 144.31007f;
 		}
 
 		moveBox.setLocation((int) x, (int) y);
+		fightBox.setLocation((int) x + Main.getTilesize()/4, (int) y + Main.getTilesize()/4);
+		
 		curAnim.update(delta);
 	}
-
+	
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+//	. . . . . . . . . . . . . . . .
+	
+	private boolean inBox(){
+		
+		if (x > 9*Main.getTilesize() && x < 12*Main.getTilesize() && y > 10*Main.getTilesize() && y < 8*Main.getTilesize())
+			return true;
+		
+		return false;
+	}
+	
 	private void initGhosts() {
 		if (colour == RED) {
 			setMode(SCATTER);
@@ -268,8 +281,8 @@ public class Ghost extends Character {
 			releaseDots = 50;
 		}
 
-		x = startX * Pacman.getTilesize();
-		y = startY * Pacman.getTilesize();
+		x = startX * Main.getTilesize();
+		y = startY * Main.getTilesize();
 
 	}
 
@@ -320,6 +333,21 @@ public class Ghost extends Character {
 		setMode(DEAD);
 	}
 
+	private void setDists(int xPoint, int yPoint, int xPoint2, int yPoint2){
+		dists[0] = yPoint - yPoint2;
+		dists[1] = yPoint2 - yPoint;
+		dists[2] = xPoint - xPoint2;
+		dists[3] = xPoint2 - xPoint;
+	}
+	
+	private void setDists(int xPoint, int yPoint){
+		setDists(xPoint, yPoint, (int)x, (int)y);
+	}
+	
+	private void setDists(int xPoint, int yPoint, int modifier){
+		setDists(xPoint + modifier, yPoint + modifier);
+	}
+
 	public void setMode(int m) {
 		dir = lastDir;
 		setLastDir(dir);
@@ -346,19 +374,4 @@ public class Ghost extends Character {
 		return NULL;
 
 	}
-
-	private ArrayList<Integer> wouldNotIntersectWalls() {
-
-		ArrayList<Integer> dirs = new ArrayList<Integer>();
-
-		for (int i = 0; i < 4; i++) {
-			if (!wouldIntersectWalls(i) && lastDir != i) {
-				dirs.add(i);
-			}
-		}
-
-		return dirs;
-
-	}
-
 }
