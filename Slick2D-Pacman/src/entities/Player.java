@@ -130,8 +130,8 @@ public class Player extends Character {
 					y = 144.31007f;
 			}
 			
-			for (int i = 0; i < 4; i++){
-				if (intersectsGhosts(fightBox) && Game.getGhosts()[i].getMode() != Ghost.DEAD){
+			for (int i = 0; i < Game.getGhosts().length; i++){
+				if (fightBox.intersects(Game.getGhosts()[i].getFightBox()) && Game.getGhosts()[i].getMode() != Ghost.DEAD){
 					if (Game.getGhosts()[i].getMode() != Ghost.SCARED){
 						startDeading();
 					}else{
@@ -179,12 +179,12 @@ public class Player extends Character {
 		
 		Image[] deathImage = new Image[20];
 		
-		imageArrays.add(deathImage);
-		
 		for (int i = 0; i < deathImage.length; i+=2){
-			deathImage[i] = Game.getSheet().getSprite(i, 10);
-			deathImage[i+1] = Game.getSheet().getSprite(i, 10);
+			deathImage[i] = Game.getSheet().getSprite(i, 11);
+			deathImage[i+1] = Game.getSheet().getSprite(i, 11);
 		}
+		
+		imageArrays.add(deathImage);
 		
 		for (int i = 0; i < 10; i++){
 			anim[i] = new Animation(imageArrays.get(i), 50, false);

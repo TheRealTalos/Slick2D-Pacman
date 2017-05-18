@@ -28,6 +28,7 @@ public class Ghost extends Character {
 	private static final int ORANGE = 3;
 
 	private static final float SCAREDSPEED = 0.7f;
+	private static final float DEADSPEED = 1.3f;
 
 	private int endScared = 0;
 
@@ -61,15 +62,15 @@ public class Ghost extends Character {
 		double pacX = Game.getPlayer().getMoveBox().getMinX();
 		double pacY = Game.getPlayer().getMoveBox().getMinY();
 
-		if (mode != SCARED && SPEED != 1) {
+		if (mode != SCARED && mode != DEAD && SPEED != 1) {
 			SPEED = 1f;
 		}
 
 		if (mode != LEAVE && mode != SCARED && mode != DEAD)
 			setMode();
 
-		if (mode == SCARED || mode == DEAD) {
-			curAnim = anim[4];
+		if (mode == SCARED) {
+			curAnim = anim[8];
 		}
 
 		if (dir == NULL && Game.getPlayer().dotsEaten >= releaseDots) {
@@ -103,6 +104,7 @@ public class Ghost extends Character {
 				setDists(startX * Main.getTilesize(), startY * Main.getTilesize());
 				if (inBox()){
 					setMode();
+					System.out.println("inbox");
 				}
 
 			} else if (mode == CHASE) {
@@ -165,25 +167,16 @@ public class Ghost extends Character {
 		for (int i = 0; i < 4; i++) {
 			if (dir == i) {
 				if (!wouldIntersectWalls(i)) {
-					if (mode != SCARED && mode != DEAD) {
-						curAnim = anim[i];
-						if (dir == UP)
-							y -= SPEED;
-						else if (dir == DOWN)
-							y += SPEED;
-						else if (dir == LEFT)
-							x -= SPEED;
-						else if (dir == RIGHT)
-							x += SPEED;
+					if (mode == SCARED) {
+						move(SCAREDSPEED);
+						
+					}else if (mode == DEAD){
+						curAnim = anim[i+DEAD];
+						move(DEADSPEED);
+						
 					} else {
-						if (dir == UP)
-							y -= SCAREDSPEED;
-						else if (dir == DOWN)
-							y += SCAREDSPEED;
-						else if (dir == LEFT)
-							x -= SCAREDSPEED;
-						else if (dir == RIGHT)
-							x += SCAREDSPEED;
+						curAnim = anim[i];
+						move(SPEED);
 					}
 				} else {
 					lastDir = setLastDir(dir);
@@ -227,25 +220,18 @@ public class Ghost extends Character {
 		curAnim.update(delta);
 	}
 	
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
-//	. . . . . . . . . . . . . . . .
+	private void move(float speed){
+		if (dir == UP)
+			y -= speed;
+		else if (dir == DOWN)
+			y += speed;
+		else if (dir == LEFT)
+			x -= speed;
+		else if (dir == RIGHT)
+			x += speed;
+	}
 	
 	private boolean inBox(){
-		
 		if (x > 9*Main.getTilesize() && x < 12*Main.getTilesize() && y > 10*Main.getTilesize() && y < 8*Main.getTilesize())
 			return true;
 		
@@ -287,24 +273,26 @@ public class Ghost extends Character {
 	}
 
 	private void initAnim() {
-		anim = new Animation[5];
-
+		anim = new Animation[9];
+		List<Image[]> imageArrays = new ArrayList<Image[]>();
+		
 		int n = 5;
 		n += colour;
+		
+		for (int i = 0; i < 8; i+=2){
+			imageArrays.add(new Image[] { Game.getSheet().getSprite(i, n), Game.getSheet().getSprite(i+1, n) } );
+		}
 
-		Image[] ghostImageUp = { Game.getSheet().getSprite(0, n), Game.getSheet().getSprite(1, n) };
-		Image[] ghostImageDown = { Game.getSheet().getSprite(2, n), Game.getSheet().getSprite(3, n) };
-		Image[] ghostImageLeft = { Game.getSheet().getSprite(4, n), Game.getSheet().getSprite(5, n) };
-		Image[] ghostImageRight = { Game.getSheet().getSprite(6, n), Game.getSheet().getSprite(7, n) };
+		
+		for (int i = 0; i < 4; i++){
+			imageArrays.add(new Image[] { Game.getSheet().getSprite(i, 10) }) ;
+		}	
 
-		Image[] ghostImageScared = { Game.getSheet().getSprite(0, 9), Game.getSheet().getSprite(1, 9) };
-
-		anim[0] = new Animation(ghostImageUp, 200, false);
-		anim[1] = new Animation(ghostImageDown, 200, false);
-		anim[2] = new Animation(ghostImageLeft, 200, false);
-		anim[3] = new Animation(ghostImageRight, 200, false);
-
-		anim[4] = new Animation(ghostImageScared, 200, false);
+		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 9), Game.getSheet().getSprite(1, 9) }) ;
+		
+		for (int i = 0; i < imageArrays.size(); i++){
+			anim[i] = new Animation(imageArrays.get(i), 200, false);
+		}
 
 		curAnim = anim[1];
 	}
