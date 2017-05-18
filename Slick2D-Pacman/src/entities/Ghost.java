@@ -62,6 +62,8 @@ public class Ghost extends Character {
 		double pacX = Game.getPlayer().getMoveBox().getMinX();
 		double pacY = Game.getPlayer().getMoveBox().getMinY();
 
+//		System.out.println();
+		
 		if (mode != SCARED && mode != DEAD && SPEED != 1) {
 			SPEED = 1f;
 		}
@@ -71,6 +73,13 @@ public class Ghost extends Character {
 
 		if (mode == SCARED) {
 			curAnim = anim[8];
+			if (Game.getTimer().getTime() >= (endScared - 3)){
+				curAnim = anim[9];
+			}
+		}
+		
+		if (mode == LEAVE){
+			curAnim = anim[1];
 		}
 
 		if (dir == NULL && Game.getPlayer().dotsEaten >= releaseDots) {
@@ -273,7 +282,7 @@ public class Ghost extends Character {
 	}
 
 	private void initAnim() {
-		anim = new Animation[9];
+		anim = new Animation[10];
 		List<Image[]> imageArrays = new ArrayList<Image[]>();
 		
 		int n = 5;
@@ -289,6 +298,8 @@ public class Ghost extends Character {
 		}	
 
 		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 9), Game.getSheet().getSprite(1, 9) }) ;
+		
+		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 9), Game.getSheet().getSprite(3, 9) }) ;
 		
 		for (int i = 0; i < imageArrays.size(); i++){
 			anim[i] = new Animation(imageArrays.get(i), 200, false);

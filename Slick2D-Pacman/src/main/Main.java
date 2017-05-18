@@ -24,18 +24,18 @@ public class Main extends StateBasedGame{
 	// ADD GHOST DEATH
 		//WHERE ARE THEY NOT BEING ALLOWED TO CUM BACK IN
 	// ADD HIGH SCORE
-	
+
 	private static final int SCALE = 2;
-	
+
 	private static final int WINDOWWIDTH = 336;
 	private static final int WINDOWHEIGHT = 400;
-	
+
 	private static final int WORLDSIZE = 336;
 	private static final int TILESIZE = 16;
 	
 	private static final int MENU = 0;
 	private static final int GAME = 1;
-	
+
 	public Main() {
 		super("Pacman");
 		this.addState(new Menu(MENU));
