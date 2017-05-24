@@ -59,8 +59,8 @@ public class Player extends Character {
 		Input input = container.getInput();
 
 		if (input.isMousePressed(0)) {
-			System.out.println("x: " + input.getMouseX()/Main.getTilesize());
-			System.out.println("y: " + input.getMouseY()/Main.getTilesize());
+			System.out.println("x: " + input.getMouseX());
+			System.out.println("y: " + input.getMouseY());
 		}
 		
 		if (!deading){

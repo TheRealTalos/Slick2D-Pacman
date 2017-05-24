@@ -59,6 +59,12 @@ public class Ghost extends Character {
 	public void update(long delta) {
 		double pacX = Game.getPlayer().getMoveBox().getMinX();
 		double pacY = Game.getPlayer().getMoveBox().getMinY();
+		
+//		System.out.println(x > 8*Main.getTilesize());
+//		System.out.println(x < 12*Main.getTilesize());
+//		System.out.println(y > 11*Main.getTilesize());
+//		System.out.println(y < 7*Main.getTilesize());
+		System.out.println(inGhosthouse());
 
 		if (dir == NULL && Game.getPlayer().dotsEaten >= releaseDots) {
 			List<Double> sortedDists = new ArrayList<Double>();
@@ -89,9 +95,8 @@ public class Ghost extends Character {
 
 			} else if (mode == DEAD) {
 				setDists(startX * Main.getTilesize(), startY * Main.getTilesize());
-				if (inBox()){
+				if (inGhosthouse()){
 					setMode();
-					System.out.println("inbox");
 				}
 
 			} else if (mode == CHASE) {
@@ -182,7 +187,7 @@ public class Ghost extends Character {
 		for (int i = 0; i < 4; i++)
 			if (!wouldIntersectWalls(i))
 				n++;
-		if (n >= 2 && insideBounds()) {
+		if (n >= 2) {
 			lastDir = setLastDir(dir);
 			dir = NULL;
 		}
@@ -211,7 +216,7 @@ public class Ghost extends Character {
 			}
 		}
 		
-		if (mode == LEAVE){
+		if (inGhosthouse()){
 			curAnim = anim[1];
 		}
 		
@@ -231,8 +236,8 @@ public class Ghost extends Character {
 		else if (dir == RIGHT)
 			x += speed;
 	}
-	
-	private boolean inBox(){
+
+	private boolean inGhosthouse(){
 		if (x > 9*Main.getTilesize() && x < 12*Main.getTilesize() && y > 10*Main.getTilesize() && y < 8*Main.getTilesize())
 			return true;
 		
@@ -331,12 +336,15 @@ public class Ghost extends Character {
 	}
 
 	public void setMode(int m) {
-		dir = lastDir;
-		setLastDir(dir);
 		mode = m;
 		if (m == SCARED) {
 			endScared = (int) (Game.getTimer().getTime() + 10);
 		}
+	}
+	
+	public void setDirLastDir(){
+		dir = lastDir;
+		setLastDir(dir);
 	}
 
 	public int getMode() {
