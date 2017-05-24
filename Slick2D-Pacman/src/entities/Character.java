@@ -16,7 +16,7 @@ public class Character {
 	protected static final int RIGHT = 3;
 	protected static final int NULL = 4;
 
-	protected float SPEED = 1f;
+	protected static final float SPEED = 1f;
 	
 	protected int dir = NULL;
 	protected int nextDir = NULL;

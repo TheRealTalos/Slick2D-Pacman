@@ -20,7 +20,7 @@ public class Ghost extends Character {
 	public static final int LEAVE = 2;
 	public static final int SCARED = 3;
 	public static final int DEAD = 4;
-
+	
 	private int colour;
 	private static final int RED = 0;;
 	private static final int PINK = 1;
@@ -30,15 +30,13 @@ public class Ghost extends Character {
 	private static final float SCAREDSPEED = 0.7f;
 	private static final float DEADSPEED = 1.3f;
 
-	private int endScared = 0;
-
 	private int startX = 0;
 	private int startY = 0;
-	
 	private int scatterPointX = 0;
 	private int scatterPointY = 0;
-
 	private int releaseDots = 0;
+
+	private int endScared = 0;
 	
 	public double[] dists = new double[4];
 
@@ -61,26 +59,6 @@ public class Ghost extends Character {
 	public void update(long delta) {
 		double pacX = Game.getPlayer().getMoveBox().getMinX();
 		double pacY = Game.getPlayer().getMoveBox().getMinY();
-
-//		System.out.println();
-		
-		if (mode != SCARED && mode != DEAD && SPEED != 1) {
-			SPEED = 1f;
-		}
-
-		if (mode != LEAVE && mode != SCARED && mode != DEAD)
-			setMode();
-
-		if (mode == SCARED) {
-			curAnim = anim[8];
-			if (Game.getTimer().getTime() >= (endScared - 3)){
-				curAnim = anim[9];
-			}
-		}
-		
-		if (mode == LEAVE){
-			curAnim = anim[1];
-		}
 
 		if (dir == NULL && Game.getPlayer().dotsEaten >= releaseDots) {
 			List<Double> sortedDists = new ArrayList<Double>();
@@ -137,7 +115,7 @@ public class Ghost extends Character {
 					else if (Game.getPlayer().getDir() == DOWN || Game.getPlayer().getDir() == RIGHT)
 						q = +1;
 
-					setDists((int)pacX, (int)pacY, (int)Game.getRedGhost().getX(), (int)Game.getRedGhost().getY());
+					setDists((int)pacX, (int)pacY, (int)Game.getRedGhost().getX(), (int)Game.getRedGhost().getY(), n);
 
 					for (int i = 0; i < dists.length; i++) {
 						dists[i] *= 2;
@@ -195,7 +173,7 @@ public class Ghost extends Character {
 		}
 
 //		 ArrayList<Integer> n = wouldNotIntersectWalls();
-//		 if (n.size() >= 2){
+//		 if (n.size() >= 2 && insideBounds()){
 //			 lastDir = setLastDir(dir);
 //			 dir = NULL;
 //		 }
@@ -223,6 +201,20 @@ public class Ghost extends Character {
 				y = 144.31007f;
 		}
 
+		if (mode != LEAVE && mode != SCARED && mode != DEAD)
+			setMode();
+
+		if (mode == SCARED) {
+			curAnim = anim[8];
+			if (Game.getTimer().getTime() >= (endScared - 3)){
+				curAnim = anim[9];
+			}
+		}
+		
+		if (mode == LEAVE){
+			curAnim = anim[1];
+		}
+		
 		moveBox.setLocation((int) x, (int) y);
 		fightBox.setLocation((int) x + Main.getTilesize()/4, (int) y + Main.getTilesize()/4);
 		
@@ -249,31 +241,13 @@ public class Ghost extends Character {
 	
 	private void initGhosts() {
 		if (colour == RED) {
-			setMode(SCATTER);
-			startX = 10;
-			startY = 7;
-			scatterPointX = 17;
-			scatterPointY = 1;
+			setGhost(SCATTER, 10, 7, 17, 1, 0);
 		} else if (colour == PINK) {
-			setMode(SCATTER);
-			startX = 10;
-			startY = 9;
-			scatterPointX = 3;
-			scatterPointY = 1;
+			setGhost(SCATTER, 10, 9, 3, 1, 0);
 		} else if (colour == BLUE) {
-			setMode(LEAVE);
-			startX = 9;
-			startY = 9;
-			scatterPointX = 1;
-			scatterPointY = 19;
-			releaseDots = 20;
+			setGhost(LEAVE, 9, 9, 1, 19, 20);
 		} else if (colour == ORANGE) {
-			setMode(LEAVE);
-			startX = 11;
-			startY = 9;
-			scatterPointX = 20;
-			scatterPointY = 19;
-			releaseDots = 50;
+			setGhost(LEAVE, 11, 9, 20, 19, 50);
 		}
 
 		x = startX * Main.getTilesize();
@@ -281,6 +255,15 @@ public class Ghost extends Character {
 
 	}
 
+	private void setGhost(int mode, int startX, int startY, int scatterX, int scatterY, int release){
+		setMode(mode);
+		this.startX = startX;
+		this.startY = startY;
+		scatterPointX = scatterX;
+		scatterPointY = scatterY;
+		releaseDots = release;
+	}
+	
 	private void initAnim() {
 		anim = new Animation[10];
 		List<Image[]> imageArrays = new ArrayList<Image[]>();
@@ -310,21 +293,21 @@ public class Ghost extends Character {
 
 	public void setMode() {
 		if (Game.getTimer().getTime() < 7) {
-			mode = (SCATTER);
+			setMode(SCATTER);
 		} else if (Game.getTimer().getTime() < 27) {
-			mode = (CHASE);
+			setMode(CHASE);
 		} else if (Game.getTimer().getTime() < 34) {
-			mode = (SCATTER);
+			setMode(SCATTER);
 		} else if (Game.getTimer().getTime() < 54) {
-			mode = (CHASE);
+			setMode(CHASE);
 		} else if (Game.getTimer().getTime() < 59) {
-			mode = (SCATTER);
+			setMode(SCATTER);
 		} else if (Game.getTimer().getTime() < 79) {
-			mode = (CHASE);
+			setMode(CHASE);
 		} else if (Game.getTimer().getTime() < 84) {
-			mode = (SCATTER);
+			setMode(SCATTER);
 		} else {
-			mode = (CHASE);
+			setMode(CHASE);
 		}
 	}
 
@@ -332,19 +315,19 @@ public class Ghost extends Character {
 		setMode(DEAD);
 	}
 
-	private void setDists(int xPoint, int yPoint, int xPoint2, int yPoint2){
-		dists[0] = yPoint - yPoint2;
-		dists[1] = yPoint2 - yPoint;
-		dists[2] = xPoint - xPoint2;
-		dists[3] = xPoint2 - xPoint;
-	}
-	
-	private void setDists(int xPoint, int yPoint){
-		setDists(xPoint, yPoint, (int)x, (int)y);
+	private void setDists(int xPoint, int yPoint, int xPoint2, int yPoint2, int modifier){
+		dists[0] = yPoint - yPoint2 + modifier;
+		dists[1] = yPoint2 - yPoint + modifier;
+		dists[2] = xPoint - xPoint2 + modifier;
+		dists[3] = xPoint2 - xPoint + modifier;
 	}
 	
 	private void setDists(int xPoint, int yPoint, int modifier){
-		setDists(xPoint + modifier, yPoint + modifier);
+		setDists(xPoint, yPoint, (int)x, (int)y, modifier);
+	}
+	
+	private void setDists(int xPoint, int yPoint){
+		setDists(xPoint, yPoint, 0);
 	}
 
 	public void setMode(int m) {
