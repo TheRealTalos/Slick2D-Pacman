@@ -59,12 +59,6 @@ public class Ghost extends Character {
 	public void update(long delta) {
 		double pacX = Game.getPlayer().getMoveBox().getMinX();
 		double pacY = Game.getPlayer().getMoveBox().getMinY();
-		
-//		System.out.println(x > 8*Main.getTilesize());
-//		System.out.println(x < 12*Main.getTilesize());
-//		System.out.println(y > 11*Main.getTilesize());
-//		System.out.println(y < 7*Main.getTilesize());
-		System.out.println(inGhosthouse());
 
 		if (dir == NULL && Game.getPlayer().dotsEaten >= releaseDots) {
 			List<Double> sortedDists = new ArrayList<Double>();
@@ -94,33 +88,27 @@ public class Ghost extends Character {
 				}
 
 			} else if (mode == DEAD) {
-				setDists(startX * Main.getTilesize(), startY * Main.getTilesize());
+				setDists(1 * Main.getTilesize(), 1 * Main.getTilesize());
 				if (inGhosthouse()){
 					setMode();
 				}
 
 			} else if (mode == CHASE) {
-				int q = 0;
-				int n = q * Main.getTilesize();
+				int modifierBase = 0;
+				int modifier = modifierBase * Main.getTilesize();
 
 				if (colour == RED) {
 					setDists((int)pacX, (int)pacY);
 
 				} else if (colour == PINK) {
-					if (Game.getPlayer().getDir() == UP || Game.getPlayer().getDir() == LEFT)
-						q = -2;
-					else if (Game.getPlayer().getDir() == DOWN || Game.getPlayer().getDir() == RIGHT)
-						q = +2;
+					modifierBase = setModifier(2);
 
-					setDists((int)pacX, (int)pacY, n);
+					setDists((int)pacX, (int)pacY, modifier);
 
 				} else if (colour == BLUE) {
-					if (Game.getPlayer().getDir() == UP || Game.getPlayer().getDir() == LEFT)
-						q = -1;
-					else if (Game.getPlayer().getDir() == DOWN || Game.getPlayer().getDir() == RIGHT)
-						q = +1;
+					modifierBase = setModifier(1);
 
-					setDists((int)pacX, (int)pacY, (int)Game.getRedGhost().getX(), (int)Game.getRedGhost().getY(), n);
+					setDists((int)pacX, (int)pacY, (int)Game.getRedGhost().getX(), (int)Game.getRedGhost().getY(), modifier);
 
 					for (int i = 0; i < dists.length; i++) {
 						dists[i] *= 2;
@@ -156,10 +144,70 @@ public class Ghost extends Character {
 			}
 		}
 
+		checkMove();
+
+//		 ArrayList<Integer> n = wouldNotIntersectWalls();
+//		 if (n.size() >= 2 && insideBounds()){
+//			 lastDir = setLastDir(dir);
+//			 dir = NULL;
+//		 }
+		
+		int n = 0;
+		for (int i = 0; i < 4; i++)
+			if (!wouldIntersectWalls(i))
+				n++;
+		if (n >= 2) {
+			lastDir = setLastDir(dir);
+			dir = NULL;
+		}
+		
+		checkTeleport();
+
+		if (mode != LEAVE && mode != SCARED && mode != DEAD)
+			setMode();
+
+		if (inGhosthouse()){
+			curAnim = anim[1];
+		}
+		
+		moveBox.setLocation((int) x, (int) y);
+		fightBox.setLocation((int) x + Main.getTilesize()/4, (int) y + Main.getTilesize()/4);
+		
+		curAnim.update(delta);
+	}
+	
+	private int setModifier(int m){
+		if (Game.getPlayer().getDir() == UP || Game.getPlayer().getDir() == LEFT)
+			return -m;
+		else
+			return m;
+	}
+	
+	private void checkTeleport(){
+		if (moveBox.getMinX() < 0 - Main.getTilesize() / 2) {
+			if (dir == LEFT)
+				x = Main.getWorldsize() + Main.getTilesize() / 2;
+			if (y != 144.31007)
+				y = 144.31007f;
+		}
+
+		if (moveBox.getMaxX() > Main.getWorldsize() + Main.getTilesize() / 2) {
+			if (dir == RIGHT)
+				x = 0 - Main.getTilesize() / 2;
+			if (y != 144.31007)
+				y = 144.31007f;
+		}
+	}
+	
+	private void checkMove(){
 		for (int i = 0; i < 4; i++) {
 			if (dir == i) {
 				if (!wouldIntersectWalls(i)) {
 					if (mode == SCARED) {
+						curAnim = anim[8];
+						if (Game.getTimer().getTime() >= (endScared - 3)){
+							curAnim = anim[9];
+						}
 						move(SCAREDSPEED);
 						
 					}else if (mode == DEAD){
@@ -176,54 +224,6 @@ public class Ghost extends Character {
 				}
 			}
 		}
-
-//		 ArrayList<Integer> n = wouldNotIntersectWalls();
-//		 if (n.size() >= 2 && insideBounds()){
-//			 lastDir = setLastDir(dir);
-//			 dir = NULL;
-//		 }
-		
-		int n = 0;
-		for (int i = 0; i < 4; i++)
-			if (!wouldIntersectWalls(i))
-				n++;
-		if (n >= 2) {
-			lastDir = setLastDir(dir);
-			dir = NULL;
-		}
-
-		if (moveBox.getMinX() < 0 - Main.getTilesize() / 2) {
-			if (dir == LEFT)
-				x = Main.getWorldsize() + Main.getTilesize() / 2;
-			if (y != 144.31007)
-				y = 144.31007f;
-		}
-
-		if (moveBox.getMaxX() > Main.getWorldsize() + Main.getTilesize() / 2) {
-			if (dir == RIGHT)
-				x = 0 - Main.getTilesize() / 2;
-			if (y != 144.31007)
-				y = 144.31007f;
-		}
-
-		if (mode != LEAVE && mode != SCARED && mode != DEAD)
-			setMode();
-
-		if (mode == SCARED) {
-			curAnim = anim[8];
-			if (Game.getTimer().getTime() >= (endScared - 3)){
-				curAnim = anim[9];
-			}
-		}
-		
-		if (inGhosthouse()){
-			curAnim = anim[1];
-		}
-		
-		moveBox.setLocation((int) x, (int) y);
-		fightBox.setLocation((int) x + Main.getTilesize()/4, (int) y + Main.getTilesize()/4);
-		
-		curAnim.update(delta);
 	}
 	
 	private void move(float speed){
@@ -238,7 +238,7 @@ public class Ghost extends Character {
 	}
 
 	private boolean inGhosthouse(){
-		if (x > 9*Main.getTilesize() && x < 12*Main.getTilesize() && y > 10*Main.getTilesize() && y < 8*Main.getTilesize())
+		if (x >= 9*Main.getTilesize() && x <= 12*Main.getTilesize() && y >= 8*Main.getTilesize() && y <= 10*Main.getTilesize())
 			return true;
 		
 		return false;
@@ -286,7 +286,7 @@ public class Ghost extends Character {
 		}	
 
 		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 9), Game.getSheet().getSprite(1, 9) }) ;
-		
+	
 		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 9), Game.getSheet().getSprite(3, 9) }) ;
 		
 		for (int i = 0; i < imageArrays.size(); i++){
@@ -297,22 +297,38 @@ public class Ghost extends Character {
 	}
 
 	public void setMode() {
-		if (Game.getTimer().getTime() < 7) {
-			setMode(SCATTER);
-		} else if (Game.getTimer().getTime() < 27) {
-			setMode(CHASE);
-		} else if (Game.getTimer().getTime() < 34) {
-			setMode(SCATTER);
-		} else if (Game.getTimer().getTime() < 54) {
-			setMode(CHASE);
-		} else if (Game.getTimer().getTime() < 59) {
-			setMode(SCATTER);
-		} else if (Game.getTimer().getTime() < 79) {
-			setMode(CHASE);
-		} else if (Game.getTimer().getTime() < 84) {
-			setMode(SCATTER);
-		} else {
-			setMode(CHASE);
+		int t = 2;
+		for (int i = 1; i < 7; i++){
+			if (i % 2 == 0) t += 5;
+			else t += 20;
+			if (Game.getTimer().getTime() < t*i){
+				if (i % 2 == 0) setMode(CHASE);
+				else setMode(SCATTER);
+				break;
+			}
+		}
+//		if (Game.getTimer().getTime() < 7) {
+//			setMode(SCATTER);
+//		} else if (Game.getTimer().getTime() < 27) {
+//			setMode(CHASE);
+//		} else if (Game.getTimer().getTime() < 34) {
+//			setMode(SCATTER);
+//		} else if (Game.getTimer().getTime() < 54) {
+//			setMode(CHASE);
+//		} else if (Game.getTimer().getTime() < 59) {
+//			setMode(SCATTER);
+//		} else if (Game.getTimer().getTime() < 79) {
+//			setMode(CHASE);
+//		} else if (Game.getTimer().getTime() < 84) {
+//			setMode(SCATTER);
+//		} else {
+//			setMode(CHASE);
+//		}
+	}
+	
+	private void setMode(int time, int mode){
+		if (Game.getTimer().getTime() < time) {
+			setMode(mode);
 		}
 	}
 
