@@ -29,6 +29,8 @@ public class Game extends BasicGameState {
 	private static final int PINK = 1;
 	private static final int BLUE = 2;
 	private static final int ORANGE = 3;
+	
+	public static final int NUMLIVES = 3;
 
 	private static TiledMap map;
 	private static Player player = new Player();
@@ -42,8 +44,8 @@ public class Game extends BasicGameState {
 	
 	private static Timer timer = new Timer();
 	
-	private static boolean win = false;
-
+	private static boolean gameOver = false;
+	
 	public Game(int state) {
 		this.state = state;
 	}
@@ -95,9 +97,25 @@ public class Game extends BasicGameState {
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbc, int delta) throws SlickException {
-		if (!win){
-			if (!player.isDead()) player.update(gc, delta);
-			if (!player.isDeading()){
+		System.out.println("deaths " + player.getDeaths());
+		if (Game.getTimer().getTime() < Ghost.getEndPaused()){
+			Ghost.setPaused(true);
+		}else {
+			Ghost.setPaused(false);
+		}
+		if (!gameOver){
+			if (player.getDeaths() >= NUMLIVES){
+				gameOver = true;
+			}else if (player.isDead()){
+				timer.init();
+				player.init();
+				for (int i = 0; i < ghosts.length; i++){
+					ghosts[i].init();
+				}
+				hud.restart();
+			}
+			if (!player.isDead() && !Ghost.getPaused()) player.update(gc, delta);
+			if (!player.isDeading() && !Ghost.getPaused()){
 				for (int i = 0; i < ghosts.length; i++){
 					ghosts[i].update(delta);
 				}
@@ -105,7 +123,7 @@ public class Game extends BasicGameState {
 			dots.update();
 			timer.update();
 		}
-		if (player.dotsEaten == 146){
+		if (player.dotsEaten == 150){
 			init(gc, sbc);
 		}
 	}
@@ -113,6 +131,10 @@ public class Game extends BasicGameState {
 	@Override
 	public int getID() {
 		return state;
+	}
+	
+	public static void setGameOver(boolean gameOver) {
+		Game.gameOver = gameOver;
 	}
 	
 	public static Ghost getRedGhost() {
@@ -137,6 +159,10 @@ public class Game extends BasicGameState {
 
 	public static Timer getTimer(){
 		return timer;
+	}
+	
+	public static HUD getHUD() {
+		return hud;
 	}
 
 	public static SpriteSheet getSheet() {

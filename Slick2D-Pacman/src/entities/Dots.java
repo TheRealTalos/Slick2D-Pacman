@@ -57,10 +57,11 @@ public class Dots {
 				if (bigDotsRec[x][y] != null && Game.getPlayer().getMoveBox().intersects(bigDotsRec[x][y])){
 					bigDots[x][y] = null;
 					bigDotsRec[x][y] = null;
-					Game.getRedGhost().setMode(Ghost.SCARED);
-					Game.getPinkGhost().setMode(Ghost.SCARED);
-					Game.getBlueGhost().setMode(Ghost.SCARED);
-					Game.getOrangeGhost().setMode(Ghost.SCARED);
+					Game.getPlayer().dotsEaten++;
+					HUD.score += 50;
+					for (int i = 0; i < Game.getGhosts().length; i++){
+						Game.getGhosts()[i].scare();
+					}
 				}
 			}
 		}

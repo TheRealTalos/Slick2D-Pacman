@@ -9,7 +9,6 @@ import main.Main;
 import states.Game;
 
 public class Character {
-
 	protected static final int UP = 0;
 	protected static final int DOWN = 1;
 	protected static final int LEFT = 2;
@@ -22,7 +21,7 @@ public class Character {
 	protected int nextDir = NULL;
 	protected int lastDir = NULL;
 	
-	protected boolean dead;
+	public boolean dead;
 
 	protected float x;
 	protected float y;
@@ -57,7 +56,6 @@ public class Character {
 	}
 
 	protected boolean wouldIntersect(int d, Rectangle a, Rectangle b) {
-
 		double x = a.getMinX();
 		double y = a.getMinY();
 
@@ -81,16 +79,26 @@ public class Character {
 		return false;
 	}
 
-	protected boolean insideBounds(){
-		
-		if (x > 0 && x < Main.getWorldsize())
+	protected boolean inMapBounds(){
+		return inBounds(1, 0, 19, 20);
+	}
+	
+	public void setDead(boolean dead) {
+		this.dead = dead;
+	}
+	
+	public boolean isDead(){
+		return dead;
+	}
+	
+	protected boolean inBounds(int x1, int y1, int x2, int y2){
+		if (x >= x1*Main.getTilesize() && y >= y1*Main.getTilesize() && x <= x2*Main.getTilesize() && y <= y2*Main.getTilesize())
 			return true;
 		
 		return false;
 	}
 	
-	protected boolean wouldIntersectWalls(int d) {
-		
+	protected boolean wouldIntersectWalls(int d, Character c) {
 		double x = moveBox.getMinX();
 		double y = moveBox.getMinY();
 
@@ -109,22 +117,28 @@ public class Character {
 			if (rr.intersects(Game.walls[i]) && d == RIGHT)
 				return true;
 		}
-		
-		for (int i = 0; i < Game.semiWalls.length; i++){
-			if (!dead && rd.intersects(Game.semiWalls[i]) && d == DOWN)
-				return true;
+		boolean ghost = false;
+		for(int i = 0; i < 4; i++){
+			if (c == Game.getGhosts()[i])
+				ghost = true;
+		}
+		if (!ghost){
+			for (int i = 0; i < Game.semiWalls.length; i++){
+				if (!dead && rd.intersects(Game.semiWalls[i]) && d == DOWN)
+					return true;
+			}
 		}
 		
 		return false;
 
 	}
 	
-	protected ArrayList<Integer> wouldNotIntersectWalls() {
+	protected ArrayList<Integer> wouldNotIntersectWalls(Character c) {
 
 		ArrayList<Integer> dirs = new ArrayList<Integer>();
 
 		for (int i = 0; i < 4; i++) {
-			if (!wouldIntersectWalls(i) && lastDir != i) {
+			if (!wouldIntersectWalls(i, c) && lastDir != i) {
 				dirs.add(i);
 			}
 		}

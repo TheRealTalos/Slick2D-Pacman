@@ -21,8 +21,6 @@ public class Main extends StateBasedGame{
 	
 	// MAKE SCALABLE GAME
 	// MESS WITH SETTINGS
-	// ADD GHOST DEATH
-		//WHERE ARE THEY NOT BEING ALLOWED TO CUM BACK IN
 	// ADD HIGH SCORE
 
 	private static final int SCALE = 2;

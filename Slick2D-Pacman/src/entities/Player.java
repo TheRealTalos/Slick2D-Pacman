@@ -1,11 +1,11 @@
 package entities;
 
 import java.awt.Rectangle;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Animation;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -17,15 +17,18 @@ import org.newdawn.slick.geom.Transform;
 
 import main.Main;
 import states.Game;
+import utils.HUD;
 
 public class Player extends Character {
 	private static final int IDLE = 4;
-	
+
 	private boolean deading;
 	private boolean gotDeaded;
 	private double deadTime;
-	
+
 	public int dotsEaten;
+	
+	private int deaths = 0;
 
 	public Player() {
 	}
@@ -34,23 +37,22 @@ public class Player extends Character {
 		dead = false;
 		deading = false;
 		gotDeaded = false;
-		
+
 		dotsEaten = 0;
 
 		x = 10 * Main.getTilesize();
 		y = 15 * Main.getTilesize();
-		
+
 		dir = NULL;
 
 		initAnim();
 
 		moveBox = new Rectangle(Main.getTilesize(), Main.getTilesize());
-		fightBox = new Rectangle(Main.getTilesize()/2, Main.getTilesize()/2);
+		fightBox = new Rectangle(Main.getTilesize() / 2, Main.getTilesize() / 2);
 
 	}
 
 	public void render(Graphics g) {
-
 		curAnim.draw(x, y);
 
 	}
@@ -59,11 +61,11 @@ public class Player extends Character {
 		Input input = container.getInput();
 
 		if (input.isMousePressed(0)) {
-			System.out.println("x: " + input.getMouseX());
-			System.out.println("y: " + input.getMouseY());
+			System.out.println("x: " + input.getMouseX() / Main.getTilesize());
+			System.out.println("y: " + input.getMouseY() / Main.getTilesize());
 		}
-		
-		if (!deading){
+
+		if (!deading) {
 
 			if (input.isKeyPressed(Input.KEY_UP) || input.isKeyPressed(Input.KEY_W)) {
 				nextDir = UP;
@@ -74,134 +76,149 @@ public class Player extends Character {
 			} else if (input.isKeyPressed(Input.KEY_RIGHT) || input.isKeyPressed(Input.KEY_D)) {
 				nextDir = RIGHT;
 			}
-	
+
 			if (nextDir == UP) {
-				if (!wouldIntersectWalls(UP)) {
+				if (!wouldIntersectWalls(UP, this)) {
 					dir = UP;
 					nextDir = NULL;
 				}
 			} else if (nextDir == DOWN) {
-				if (!wouldIntersectWalls(DOWN)) {
+				if (!wouldIntersectWalls(DOWN, this)) {
 					dir = DOWN;
 					nextDir = NULL;
 				}
 			} else if (nextDir == LEFT) {
-				if (!wouldIntersectWalls(LEFT)) {
+				if (!wouldIntersectWalls(LEFT, this)) {
 					dir = LEFT;
 					nextDir = NULL;
 				}
 			} else if (nextDir == RIGHT) {
-				if (!wouldIntersectWalls(RIGHT)) {
+				if (!wouldIntersectWalls(RIGHT, this)) {
 					dir = RIGHT;
 					nextDir = NULL;
 				}
 			}
-			
-			for (int i = 0; i < 4; i++){
-				if (dir == i){
-					if (!wouldIntersectWalls(i)){
+
+			for (int i = 0; i < 4; i++) {
+				if (dir == i) {
+					if (!wouldIntersectWalls(i, this)) {
 						curAnim = anim[i];
-						if (dir == UP) y -= SPEED; 
-						if (dir == DOWN) y += SPEED; 
-						if (dir == LEFT) x -= SPEED; 
-						if (dir == RIGHT) x += SPEED; 
-					}else {
-						curAnim = anim[IDLE+i];
+						if (dir == UP)
+							y -= SPEED;
+						if (dir == DOWN)
+							y += SPEED;
+						if (dir == LEFT)
+							x -= SPEED;
+						if (dir == RIGHT)
+							x += SPEED;
+					} else {
+						curAnim = anim[IDLE + i];
 						dir = NULL;
 					}
 				}
 			}
-	
+
 			if (moveBox.getMinX() < 0 - Main.getTilesize() / 2) {
 				if (dir == LEFT)
 					x = Main.getWorldsize() + Main.getTilesize() / 2;
-				if (curAnim == anim[UP] || curAnim == anim[DOWN] || curAnim == anim[IDLE + UP] || curAnim == anim[IDLE + DOWN])
+				if (curAnim == anim[UP] || curAnim == anim[DOWN] || curAnim == anim[IDLE + UP]
+						|| curAnim == anim[IDLE + DOWN])
 					dir = RIGHT;
 				if (y != 144.31007)
 					y = 144.31007f;
 			}
-	
+
 			if (moveBox.getMaxX() > Main.getWorldsize() + Main.getTilesize() / 2) {
 				if (dir == RIGHT)
 					x = 0 - Main.getTilesize() / 2;
-				if (curAnim == anim[UP] || curAnim == anim[DOWN] || curAnim == anim[IDLE + UP] || curAnim == anim[IDLE + DOWN])
+				if (curAnim == anim[UP] || curAnim == anim[DOWN] || curAnim == anim[IDLE + UP]
+						|| curAnim == anim[IDLE + DOWN])
 					dir = LEFT;
 				if (y != 144.31007)
 					y = 144.31007f;
 			}
-			
-			for (int i = 0; i < Game.getGhosts().length; i++){
-				if (fightBox.intersects(Game.getGhosts()[i].getFightBox()) && Game.getGhosts()[i].getMode() != Ghost.DEAD){
-					if (Game.getGhosts()[i].getMode() != Ghost.SCARED){
+
+			for (int i = 0; i < Game.getGhosts().length; i++) {
+				if (fightBox.intersects(Game.getGhosts()[i].getFightBox())
+						&& Game.getGhosts()[i].getMode() != Ghost.DEAD) {
+					if (Game.getGhosts()[i].getMode() != Ghost.SCARED) {
 						startDeading();
-					}else{
+					} else {
+						Ghost.deadGhosts++;
+						int points = 200 * Ghost.deadGhosts;
+						Game.getHUD().score += points;
+						Game.getHUD().draw((int) x, (int) y, Integer.toString(points), Ghost.pauseTime + (int) Game.getTimer().getTime(), HUD.blueFont);
 						Game.getGhosts()[i].die();
 					}
 				}
 			}
 
-		}else{
+		} else {
 			die();
 		}
 
 		curAnim.update(delta);
 		moveBox.setLocation((int) x, (int) y);
-		fightBox.setLocation((int) x + Main.getTilesize()/4, (int) y + Main.getTilesize()/4);
+		fightBox.setLocation((int) x + Main.getTilesize() / 4, (int) y + Main.getTilesize() / 4);
 	}
-	
-	private void startDeading(){
+
+	private void startDeading() {
 		deading = true;
-		if (!gotDeaded) deadTime = Game.getTimer().getTime() + 0.55;
+		if (!gotDeaded)
+			deadTime = Game.getTimer().getTime() + 0.55;
 		gotDeaded = true;
 	}
-	
-	private void die(){
+
+	public int getDeaths() {
+		return deaths;
+	}
+
+	private void die() {
 		curAnim = anim[9];
-		if (Game.getTimer().getTime() >= deadTime){
+		if (Game.getTimer().getTime() >= deadTime) {
 			dead = true;
+			deaths++;
+			Game.getHUD().removeLife();
 		}
 	}
-	
-	private void initAnim(){
+
+	private void initAnim() {
 		anim = new Animation[10];
-		
+
 		List<Image[]> imageArrays = new ArrayList<Image[]>();
-		
-		for (int i = 1; i < 5; i++){
-			imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 0), Game.getSheet().getSprite(i*2-1, 0), Game.getSheet().getSprite(i*2, 0), Game.getSheet().getSprite(i*2-1, 0)});
+
+		for (int i = 1; i < 5; i++) {
+			imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 0), Game.getSheet().getSprite(i * 2 - 1, 0),
+					Game.getSheet().getSprite(i * 2, 0), Game.getSheet().getSprite(i * 2 - 1, 0) });
 		}
-		
-		for (int i = 1; i < 5; i++){
-			imageArrays.add(new Image[] { Game.getSheet().getSprite(i*2-1, 0) });
+
+		for (int i = 1; i < 5; i++) {
+			imageArrays.add(new Image[] { Game.getSheet().getSprite(i * 2 - 1, 0) });
 		}
 
 		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 0) });
-		
+
 		Image[] deathImage = new Image[20];
-		
-		for (int i = 0; i < deathImage.length; i+=2){
+
+		for (int i = 0; i < deathImage.length; i += 2) {
 			deathImage[i] = Game.getSheet().getSprite(i, 11);
-			deathImage[i+1] = Game.getSheet().getSprite(i, 11);
+			deathImage[i + 1] = Game.getSheet().getSprite(i, 11);
 		}
-		
+
 		imageArrays.add(deathImage);
-		
-		for (int i = 0; i < 10; i++){
+
+		for (int i = 0; i < 10; i++) {
 			anim[i] = new Animation(imageArrays.get(i), 50, false);
 		}
-		
+
 		curAnim = anim[8];
 	}
-	
-	public boolean isDead(){
-		return dead;
-	}
-	
-	public boolean isDeading(){
+
+	public boolean isDeading() {
 		return deading;
 	}
 
-	public Rectangle getPacBox(){
+	public Rectangle getPacBox() {
 		return moveBox;
 	}
 }
