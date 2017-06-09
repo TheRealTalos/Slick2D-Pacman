@@ -10,6 +10,7 @@ import java.util.List;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.util.ResourceLoader;
@@ -18,7 +19,6 @@ import main.Main;
 import states.Game;
 
 public class HUD {
-
 	public static int score;
 	
 	private int drawX;
@@ -31,6 +31,8 @@ public class HUD {
 	public static UnicodeFont blueFont;
 	public static UnicodeFont yellowFont;
 	
+	private Sound readySound = new Sound(null);
+	
 	public HUD() {
 
 	}
@@ -40,7 +42,7 @@ public class HUD {
 		whiteFont = createFont(18, Color.WHITE);
 		blueFont = createFont(12, Color.BLUE);
 		yellowFont = createFont(15, Color.YELLOW);
-		draw(125, 173, "Ready!", 2, yellowFont);
+		restart();
 		
 		for (int i = 0; i < 2; i++){
 			lives.add(Game.getSheet().getSprite(5, 0));
@@ -49,6 +51,7 @@ public class HUD {
 	}
 	
 	public void restart(){
+		readySound.play();
 		draw(125, 173, "Ready!", 2, yellowFont);
 	}
 

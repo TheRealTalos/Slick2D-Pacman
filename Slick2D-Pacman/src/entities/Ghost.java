@@ -9,6 +9,7 @@ import java.util.Collections;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Sound;
 
 import main.Main;
 import states.Game;
@@ -35,6 +36,8 @@ public class Ghost extends Character {
 	private int scatterPointX = 0;
 	private int scatterPointY = 0;
 	private int releaseDots = 0;
+	
+	private Sound deathSound = new Sound(null);
 
 	private static int endPaused = 0;
 	private int endScared = 0;

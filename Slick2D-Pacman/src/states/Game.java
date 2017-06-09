@@ -22,7 +22,6 @@ import utils.HUD;
 import utils.Timer;
 
 public class Game extends BasicGameState {
-
 	private int state;
 	
 	private static final int RED = 0;;
@@ -125,6 +124,7 @@ public class Game extends BasicGameState {
 			dots.update();
 			timer.update();
 		}else {
+			Main.setHighscore();
 			gameOver = false;
 			Player.speed = 1f;
 			player.setDeaths(0);

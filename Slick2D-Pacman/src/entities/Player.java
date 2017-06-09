@@ -11,6 +11,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
@@ -20,6 +21,12 @@ import states.Game;
 import utils.HUD;
 
 public class Player extends Character {
+	
+	private Sound eatSound = new Sound(null);
+	private Sound scaredEatSound = new Sound(null);
+	private Sound moveSound = new Sound(null);
+	private Sound deathSound = new Sound(null);
+	
 	private static final int IDLE = 4;
 
 	private boolean deading;
@@ -149,8 +156,8 @@ public class Player extends Character {
 					} else {
 						Ghost.deadGhosts++;
 						int points = 200 * Ghost.deadGhosts;
-						Game.getHUD().score += points;
-						if (Game.getHUD().score >= Main.highscore) Main.highscore += 10;
+						HUD.score += points;
+						if (HUD.score > Main.highscore) Main.highscore = HUD.score;
 						Game.getHUD().draw((int) x, (int) y, Integer.toString(points), Ghost.pauseTime + (int) Game.getTimer().getTime(), HUD.blueFont);
 						Game.getGhosts()[i].die();
 					}

@@ -4,7 +4,11 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -22,6 +26,21 @@ public class Main extends StateBasedGame{
 	// MAKE SCALABLE GAME
 	// MESS WITH SETTINGS
 	// ADD HIGH SCORE
+	
+	/*
+	Make menu look nice
+	different menu when gameovered
+	show highscore on menu
+	add menu buttons: reset highscore, quit??
+	 * 
+	start sound
+	wakka wakka - when eating in chase/scatter
+	alarm sound - when opening and closing mouth in chase/scatter
+	really fast bing- when opening and closing mouth in scared mode
+	ding ding - when ghosts die and are eyes
+	death souund - when pac dies 
+	 
+	 */
 
 	private static final int SCALE = 2;
 
@@ -35,6 +54,12 @@ public class Main extends StateBasedGame{
 	private static final int GAME = 1;
 	
 	public static int highscore = 0;
+	private static int origHighscore = 0;
+	
+	private static FileReader fileReader;
+	
+	public static BufferedReader reader;
+	public static BufferedWriter writer;
 
 	public Main() {
 		super("Pacman");
@@ -43,7 +68,18 @@ public class Main extends StateBasedGame{
 	}
 	
 	public static void main(String[] args){
-		
+		try (BufferedReader br = new BufferedReader(new FileReader("res/HIGH.txt"))) {
+			String s;
+
+			if ((s = br.readLine()) != null)
+				highscore = Integer.parseInt(s);
+			else highscore = 0;
+			origHighscore = highscore;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
 		try{
 			AppGameContainer app = new AppGameContainer(new Main());
 			app.setDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, false);
@@ -54,6 +90,17 @@ public class Main extends StateBasedGame{
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public static void setHighscore(){
+		if (origHighscore < highscore){
+			try (BufferedWriter bw = new BufferedWriter(new FileWriter("res/HIGH.txt"))) {
+				bw.write(Integer.toString(highscore));
+	
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	@Override
