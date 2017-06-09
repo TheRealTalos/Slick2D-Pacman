@@ -26,6 +26,8 @@ public class Player extends Character {
 	private boolean gotDeaded;
 	private double deadTime;
 
+	public static float speed = SPEED;
+	
 	public int dotsEaten;
 	
 	private int deaths = 0;
@@ -33,19 +35,34 @@ public class Player extends Character {
 	public Player() {
 	}
 
+	public void restart(){
+		dead = false;
+		deading = false;
+		gotDeaded = false;
+		
+		curAnim = anim[8];
+
+		x = 10 * Main.getTilesize();
+		y = 15 * Main.getTilesize();
+
+		dir = NULL;
+	}
+	
 	public void init() {
 		dead = false;
 		deading = false;
 		gotDeaded = false;
 
 		dotsEaten = 0;
-
+		
 		x = 10 * Main.getTilesize();
 		y = 15 * Main.getTilesize();
 
 		dir = NULL;
 
 		initAnim();
+		
+		curAnim = anim[8];
 
 		moveBox = new Rectangle(Main.getTilesize(), Main.getTilesize());
 		fightBox = new Rectangle(Main.getTilesize() / 2, Main.getTilesize() / 2);
@@ -69,48 +86,34 @@ public class Player extends Character {
 
 			if (input.isKeyPressed(Input.KEY_UP) || input.isKeyPressed(Input.KEY_W)) {
 				nextDir = UP;
-			} else if (input.isKeyPressed(Input.KEY_DOWN) || input.isKeyPressed(Input.KEY_A)) {
+			} else if (input.isKeyPressed(Input.KEY_DOWN) || input.isKeyPressed(Input.KEY_S)) {
 				nextDir = DOWN;
-			} else if (input.isKeyPressed(Input.KEY_LEFT) || input.isKeyPressed(Input.KEY_S)) {
+			} else if (input.isKeyPressed(Input.KEY_LEFT) || input.isKeyPressed(Input.KEY_A)) {
 				nextDir = LEFT;
 			} else if (input.isKeyPressed(Input.KEY_RIGHT) || input.isKeyPressed(Input.KEY_D)) {
 				nextDir = RIGHT;
 			}
 
-			if (nextDir == UP) {
-				if (!wouldIntersectWalls(UP, this)) {
-					dir = UP;
+			for (int i = 0; i < 4; i++){
+				if (nextDir == i && !wouldIntersectWalls(i, this)) {
+					dir = i;
 					nextDir = NULL;
-				}
-			} else if (nextDir == DOWN) {
-				if (!wouldIntersectWalls(DOWN, this)) {
-					dir = DOWN;
-					nextDir = NULL;
-				}
-			} else if (nextDir == LEFT) {
-				if (!wouldIntersectWalls(LEFT, this)) {
-					dir = LEFT;
-					nextDir = NULL;
-				}
-			} else if (nextDir == RIGHT) {
-				if (!wouldIntersectWalls(RIGHT, this)) {
-					dir = RIGHT;
-					nextDir = NULL;
+					break;
 				}
 			}
-
+			
 			for (int i = 0; i < 4; i++) {
 				if (dir == i) {
 					if (!wouldIntersectWalls(i, this)) {
 						curAnim = anim[i];
 						if (dir == UP)
-							y -= SPEED;
+							y -= speed;
 						if (dir == DOWN)
-							y += SPEED;
+							y += speed;
 						if (dir == LEFT)
-							x -= SPEED;
+							x -= speed;
 						if (dir == RIGHT)
-							x += SPEED;
+							x += speed;
 					} else {
 						curAnim = anim[IDLE + i];
 						dir = NULL;
@@ -147,6 +150,7 @@ public class Player extends Character {
 						Ghost.deadGhosts++;
 						int points = 200 * Ghost.deadGhosts;
 						Game.getHUD().score += points;
+						if (Game.getHUD().score >= Main.highscore) Main.highscore += 10;
 						Game.getHUD().draw((int) x, (int) y, Integer.toString(points), Ghost.pauseTime + (int) Game.getTimer().getTime(), HUD.blueFont);
 						Game.getGhosts()[i].die();
 					}
@@ -161,12 +165,22 @@ public class Player extends Character {
 		moveBox.setLocation((int) x, (int) y);
 		fightBox.setLocation((int) x + Main.getTilesize() / 4, (int) y + Main.getTilesize() / 4);
 	}
+	
+	public void setDeaths(int deaths) {
+		this.deaths = deaths;
+	}
 
 	private void startDeading() {
 		deading = true;
 		if (!gotDeaded)
 			deadTime = Game.getTimer().getTime() + 0.55;
 		gotDeaded = true;
+	}
+	
+	
+
+	public void setDotsEaten(int dotsEaten) {
+		this.dotsEaten = dotsEaten;
 	}
 
 	public int getDeaths() {
@@ -178,7 +192,7 @@ public class Player extends Character {
 		if (Game.getTimer().getTime() >= deadTime) {
 			dead = true;
 			deaths++;
-			Game.getHUD().removeLife();
+			if (deaths < 3) Game.getHUD().removeLife();
 		}
 	}
 

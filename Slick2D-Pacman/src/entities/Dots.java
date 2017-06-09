@@ -52,6 +52,7 @@ public class Dots {
 					dots[x][y] = null;
 					dotsRec[x][y] = null;
 					HUD.score += 10;
+					if (HUD.score >= Main.highscore) Main.highscore += 10;
 					Game.getPlayer().dotsEaten++;
 				}
 				if (bigDotsRec[x][y] != null && Game.getPlayer().getMoveBox().intersects(bigDotsRec[x][y])){
@@ -59,6 +60,7 @@ public class Dots {
 					bigDotsRec[x][y] = null;
 					Game.getPlayer().dotsEaten++;
 					HUD.score += 50;
+					if (HUD.score >= Main.highscore) Main.highscore += 50;
 					for (int i = 0; i < Game.getGhosts().length; i++){
 						Game.getGhosts()[i].scare();
 					}

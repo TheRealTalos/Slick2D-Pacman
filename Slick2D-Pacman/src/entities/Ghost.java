@@ -20,7 +20,7 @@ public class Ghost extends Character {
 	public static final int LEAVE = 2;
 	public static final int SCARED = 3;
 	public static final int DEAD = 4;
-	
+
 	private int colour;
 	private static final int RED = 0;;
 	private static final int PINK = 1;
@@ -38,15 +38,15 @@ public class Ghost extends Character {
 
 	private static int endPaused = 0;
 	private int endScared = 0;
-	
+
 	private boolean wasJustChase = true;
 	private boolean wasJustInGhosthouse = false;
-	
+
 	private static boolean paused;
 	public static int pauseTime;
-	
+
 	public static int deadGhosts;
-	
+
 	public double[] dists = new double[4];
 
 	public Ghost(int colour) {
@@ -56,12 +56,13 @@ public class Ghost extends Character {
 	public void init() {
 		initGhosts();
 		initAnim();
-		
+
 		paused = false;
+		endPaused = 0;
 		pauseTime = 1;
-		
+
 		moveBox = new Rectangle((int) x, (int) y, Main.getTilesize(), Main.getTilesize());
-		fightBox = new Rectangle((int) x, (int) y, Main.getTilesize()/2, Main.getTilesize()/2);
+		fightBox = new Rectangle((int) x, (int) y, Main.getTilesize() / 2, Main.getTilesize() / 2);
 	}
 
 	public void render() {
@@ -71,13 +72,13 @@ public class Ghost extends Character {
 	public void update(long delta) {
 		double pacX = Game.getPlayer().getMoveBox().getMinX();
 		double pacY = Game.getPlayer().getMoveBox().getMinY();
-	
+
 		if (dir == NULL && Game.getPlayer().dotsEaten >= releaseDots) {
 			List<Double> sortedDists = new ArrayList<Double>();
 
 			if (mode == LEAVE) {
 				List<Integer> p = wouldNotIntersectWalls(this);
-				
+
 				setDists(10 * Main.getTilesize(), 7 * Main.getTilesize());
 				if (y <= 7 * Main.getTilesize()) {
 					setMode();
@@ -102,10 +103,10 @@ public class Ghost extends Character {
 
 			} else if (mode == DEAD) {
 				setDists(startX * Main.getTilesize(), startY * Main.getTilesize());
-				if (inGhosthouse()){
+				if (inGhosthouse()) {
 					wasJustInGhosthouse = true;
 					reverseDir();
-				}else if (wasJustInGhosthouse) {
+				} else if (wasJustInGhosthouse) {
 					wasJustInGhosthouse = false;
 					setMode(LEAVE);
 				}
@@ -115,24 +116,25 @@ public class Ghost extends Character {
 				int modifier = modifierBase * Main.getTilesize();
 
 				if (colour == RED) {
-					setDists((int)pacX, (int)pacY);
+					setDists((int) pacX, (int) pacY);
 
 				} else if (colour == PINK) {
 					modifierBase = setModifier(2);
 
-					setDists((int)pacX, (int)pacY, modifier);
+					setDists((int) pacX, (int) pacY, modifier);
 
 				} else if (colour == BLUE) {
 					modifierBase = setModifier(1);
 
-					setDists((int)pacX, (int)pacY, (int)Game.getRedGhost().getX(), (int)Game.getRedGhost().getY(), modifier);
+					setDists((int) pacX, (int) pacY, (int) Game.getRedGhost().getX(), (int) Game.getRedGhost().getY(),
+							modifier);
 
 					for (int i = 0; i < dists.length; i++) {
 						dists[i] *= 2;
 					}
 
 				} else if (colour == ORANGE) {
-					setDists((int)pacX, (int)pacY);
+					setDists((int) pacX, (int) pacY);
 					ArrayList<Double> k = new ArrayList<Double>();
 					for (int i = 0; i < dists.length; i++) {
 						k.add(dists[i]);
@@ -163,12 +165,12 @@ public class Ghost extends Character {
 
 		checkMove();
 
-//		 ArrayList<Integer> n = wouldNotIntersectWalls();
-//		 if (n.size() >= 2 && inMapBounds()){
-//			 lastDir = setLastDir(dir);
-//			 dir = NULL;
-//		 }
-		
+		// ArrayList<Integer> n = wouldNotIntersectWalls();
+		// if (n.size() >= 2 && inMapBounds()){
+		// lastDir = setLastDir(dir);
+		// dir = NULL;
+		// }
+
 		int n = 0;
 		for (int i = 0; i < 4; i++)
 			if (!wouldIntersectWalls(i, this))
@@ -177,38 +179,38 @@ public class Ghost extends Character {
 			lastDir = setLastDir(dir);
 			dir = NULL;
 		}
-		
+
 		checkTeleport();
-		
+
 		if (mode != LEAVE && mode != SCARED && mode != DEAD)
 			setMode();
 
-		if (inGhosthouse()){
+		if (inGhosthouse()) {
 			curAnim = anim[1];
 		}
-		
+
 		moveBox.setLocation((int) x, (int) y);
-		fightBox.setLocation((int) x + Main.getTilesize()/4, (int) y + Main.getTilesize()/4);
-		
+		fightBox.setLocation((int) x + Main.getTilesize() / 4, (int) y + Main.getTilesize() / 4);
+
 		curAnim.update(delta);
 	}
-	
+
 	public static int getEndPaused() {
 		return endPaused;
 	}
-	
-	public static void setPaused(boolean value){
+
+	public static void setPaused(boolean value) {
 		paused = value;
 	}
 
-	private int setModifier(int m){
+	private int setModifier(int m) {
 		if (Game.getPlayer().getDir() == UP || Game.getPlayer().getDir() == LEFT)
 			return -m;
 		else
 			return m;
 	}
-	
-	private void checkTeleport(){
+
+	private void checkTeleport() {
 		if (moveBox.getMinX() < 0 - Main.getTilesize() / 2) {
 			if (dir == LEFT)
 				x = Main.getWorldsize() + Main.getTilesize() / 2;
@@ -223,22 +225,22 @@ public class Ghost extends Character {
 				y = 144.31007f;
 		}
 	}
-	
-	private void checkMove(){
+
+	private void checkMove() {
 		for (int i = 0; i < 4; i++) {
 			if (dir == i) {
 				if (!wouldIntersectWalls(i, this)) {
 					if (mode == SCARED) {
 						curAnim = anim[8];
-						if (Game.getTimer().getTime() >= (endScared - 3)){
+						if (Game.getTimer().getTime() >= (endScared - 3)) {
 							curAnim = anim[9];
 						}
 						move(SCAREDSPEED);
-						
-					}else if (mode == DEAD){
-						curAnim = anim[i+DEAD];
+
+					} else if (mode == DEAD) {
+						curAnim = anim[i + DEAD];
 						move(DEADSPEED);
-						
+
 					} else {
 						curAnim = anim[i];
 						move(SPEED);
@@ -250,12 +252,12 @@ public class Ghost extends Character {
 			}
 		}
 	}
-	
-	public static boolean getPaused(){
+
+	public static boolean getPaused() {
 		return paused;
 	}
-	
-	private void move(float speed){
+
+	private void move(float speed) {
 		if (dir == UP)
 			y -= speed;
 		else if (dir == DOWN)
@@ -266,10 +268,10 @@ public class Ghost extends Character {
 			x += speed;
 	}
 
-	private boolean inGhosthouse(){
+	private boolean inGhosthouse() {
 		return inBounds(9, 8, 12, 10);
 	}
-	
+
 	private void initGhosts() {
 		if (colour == RED) {
 			setGhost(SCATTER, 10, 7, 17, 1, 0);
@@ -286,7 +288,7 @@ public class Ghost extends Character {
 
 	}
 
-	private void setGhost(int mode, int startX, int startY, int scatterX, int scatterY, int release){
+	private void setGhost(int mode, int startX, int startY, int scatterX, int scatterY, int release) {
 		setMode(mode);
 		this.startX = startX;
 		this.startY = startY;
@@ -294,28 +296,27 @@ public class Ghost extends Character {
 		scatterPointY = scatterY;
 		releaseDots = release;
 	}
-	
+
 	private void initAnim() {
 		anim = new Animation[10];
 		List<Image[]> imageArrays = new ArrayList<Image[]>();
-		
+
 		int n = 5;
 		n += colour;
-		
-		for (int i = 0; i < 8; i+=2){
-			imageArrays.add(new Image[] { Game.getSheet().getSprite(i, n), Game.getSheet().getSprite(i+1, n) } );
+
+		for (int i = 0; i < 8; i += 2) {
+			imageArrays.add(new Image[] { Game.getSheet().getSprite(i, n), Game.getSheet().getSprite(i + 1, n) });
 		}
 
-		
-		for (int i = 0; i < 4; i++){
-			imageArrays.add(new Image[] { Game.getSheet().getSprite(i, 10) }) ;
-		}	
+		for (int i = 0; i < 4; i++) {
+			imageArrays.add(new Image[] { Game.getSheet().getSprite(i, 10) });
+		}
 
-		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 9), Game.getSheet().getSprite(1, 9) }) ;
-	
-		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 9), Game.getSheet().getSprite(3, 9) }) ;
-		
-		for (int i = 0; i < imageArrays.size(); i++){
+		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 9), Game.getSheet().getSprite(1, 9) });
+
+		imageArrays.add(new Image[] { Game.getSheet().getSprite(0, 9), Game.getSheet().getSprite(3, 9) });
+
+		for (int i = 0; i < imageArrays.size(); i++) {
 			anim[i] = new Animation(imageArrays.get(i), 200, false);
 		}
 
@@ -324,19 +325,20 @@ public class Ghost extends Character {
 
 	public void setMode() {
 		int t = 2;
-		for (int i = 0; i < 6; i++){
-			if (i % 2 == 0) t += 5;
-			else t += 20;
-			if (Game.getTimer().getTime() < t){
-				if (i % 2 == 0){
-					if (wasJustChase && i != 0){
+		for (int i = 0; i < 6; i++) {
+			if (i % 2 == 0)
+				t += 5;
+			else
+				t += 20;
+			if (Game.getTimer().getTime() < t) {
+				if (i % 2 == 0) {
+					if (wasJustChase && i != 0) {
 						reverseDir();
 					}
 					wasJustChase = false;
 					setMode(SCATTER);
-				}
-				else {
-					if (!wasJustChase){
+				} else {
+					if (!wasJustChase) {
 						reverseDir();
 					}
 					wasJustChase = true;
@@ -352,7 +354,7 @@ public class Ghost extends Character {
 		endPaused = (int) (Game.getTimer().getTime() + pauseTime);
 		setMode(DEAD);
 	}
-	
+
 	public int getStartX() {
 		return startX;
 	}
@@ -361,19 +363,18 @@ public class Ghost extends Character {
 		return startY;
 	}
 
-
-	private void setDists(int xPoint, int yPoint, int xPoint2, int yPoint2, int modifier){
+	private void setDists(int xPoint, int yPoint, int xPoint2, int yPoint2, int modifier) {
 		dists[0] = yPoint - yPoint2 + modifier;
 		dists[1] = yPoint2 - yPoint + modifier;
 		dists[2] = xPoint - xPoint2 + modifier;
 		dists[3] = xPoint2 - xPoint + modifier;
 	}
-	
-	private void setDists(int xPoint, int yPoint, int modifier){
-		setDists(xPoint, yPoint, (int)x, (int)y, modifier);
+
+	private void setDists(int xPoint, int yPoint, int modifier) {
+		setDists(xPoint, yPoint, (int) x, (int) y, modifier);
 	}
-	
-	private void setDists(int xPoint, int yPoint){
+
+	private void setDists(int xPoint, int yPoint) {
 		setDists(xPoint, yPoint, 0);
 	}
 
@@ -382,17 +383,22 @@ public class Ghost extends Character {
 		if (m == SCARED) {
 			endScared = (int) (Game.getTimer().getTime() + 10);
 		}
+		if (m == DEAD) {
+			canGhosthouse = true;
+		} else {
+			canGhosthouse = false;
+		}
 	}
-	
-	public void scare(){
-		if (mode != DEAD){
+
+	public void scare() {
+		if (mode != DEAD) {
 			deadGhosts = 0;
 			reverseDir();
 			setMode(SCARED);
 		}
 	}
-	
-	public void reverseDir(){
+
+	public void reverseDir() {
 		dir = lastDir;
 		setLastDir(dir);
 	}

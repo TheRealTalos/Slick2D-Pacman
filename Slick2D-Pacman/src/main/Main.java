@@ -33,6 +33,8 @@ public class Main extends StateBasedGame{
 	
 	private static final int MENU = 0;
 	private static final int GAME = 1;
+	
+	public static int highscore = 0;
 
 	public Main() {
 		super("Pacman");
@@ -41,6 +43,7 @@ public class Main extends StateBasedGame{
 	}
 	
 	public static void main(String[] args){
+		
 		try{
 			AppGameContainer app = new AppGameContainer(new Main());
 			app.setDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, false);
@@ -55,8 +58,6 @@ public class Main extends StateBasedGame{
 	
 	@Override
 	public void initStatesList(GameContainer gc) throws SlickException {
-		this.getState(MENU).init(gc, this);
-		this.getState(GAME).init(gc, this);
 		this.enterState(MENU);
 	}
 	

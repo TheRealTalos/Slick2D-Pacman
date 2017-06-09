@@ -14,11 +14,12 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.util.ResourceLoader;
 
+import main.Main;
 import states.Game;
 
 public class HUD {
 
-	public static int score = 0;
+	public static int score;
 	
 	private int drawX;
 	private int drawY;
@@ -35,12 +36,13 @@ public class HUD {
 	}
 
 	public void init() {
+		score = 0;
 		whiteFont = createFont(18, Color.WHITE);
 		blueFont = createFont(12, Color.BLUE);
 		yellowFont = createFont(15, Color.YELLOW);
 		draw(125, 173, "Ready!", 2, yellowFont);
 		
-		for (int i = 0; i < Game.NUMLIVES; i++){
+		for (int i = 0; i < 2; i++){
 			lives.add(Game.getSheet().getSprite(5, 0));
 		}
 		
@@ -52,7 +54,7 @@ public class HUD {
 
 	public void render(Graphics g) {
 		whiteFont.drawString(20, 330, Integer.toString(score));
-		whiteFont.drawString(140, 330, "HIGH " + Integer.toString(score));
+		whiteFont.drawString(140, 330, "HIGH " + Integer.toString(Main.highscore));
 		
 		for (int i = 0; i < texts.size(); i++){
 			texts.get(i).getFont().drawString(texts.get(i).getX(), texts.get(i).getY(), texts.get(i).getText());

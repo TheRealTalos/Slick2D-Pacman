@@ -64,7 +64,7 @@ public class Game extends BasicGameState {
 		dots.init();
 		hud.init();
 		timer.init();
-		
+	
 		int w = 0;
 		int sw = 0;
 
@@ -96,25 +96,27 @@ public class Game extends BasicGameState {
 	}
 
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbc, int delta) throws SlickException {
-		System.out.println("deaths " + player.getDeaths());
+	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		if (Game.getTimer().getTime() < Ghost.getEndPaused()){
 			Ghost.setPaused(true);
 		}else {
 			Ghost.setPaused(false);
 		}
+		
 		if (!gameOver){
 			if (player.getDeaths() >= NUMLIVES){
 				gameOver = true;
 			}else if (player.isDead()){
 				timer.init();
-				player.init();
+				player.restart();
 				for (int i = 0; i < ghosts.length; i++){
 					ghosts[i].init();
 				}
 				hud.restart();
 			}
-			if (!player.isDead() && !Ghost.getPaused()) player.update(gc, delta);
+			if (!player.isDead() && !Ghost.getPaused()){
+				player.update(gc, delta);
+			}
 			if (!player.isDeading() && !Ghost.getPaused()){
 				for (int i = 0; i < ghosts.length; i++){
 					ghosts[i].update(delta);
@@ -122,10 +124,30 @@ public class Game extends BasicGameState {
 			}
 			dots.update();
 			timer.update();
+		}else {
+			gameOver = false;
+			Player.speed = 1f;
+			player.setDeaths(0);
+			hud.init();
+			player.setDotsEaten(0);
+			restart();
+			sbg.enterState(0);
 		}
 		if (player.dotsEaten == 150){
-			init(gc, sbc);
+			if (Player.speed > 0.8f) Player.speed -= 0.02f;
+			hud.restart();
+			restart();
 		}
+	}
+	
+	public void restart(){
+		player.init();
+		for (int i = 0; i < ghosts.length; i++){
+			ghosts[i] = new Ghost(i);
+			ghosts[i].init();
+		}
+		dots.init();
+		timer.init();
 	}
 
 	@Override

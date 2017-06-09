@@ -31,6 +31,8 @@ public class Character {
 	
 	protected Rectangle moveBox;
 	protected Rectangle fightBox;
+	
+	protected boolean canGhosthouse = false;
 
 	public Character() {
 	}
@@ -101,30 +103,32 @@ public class Character {
 	protected boolean wouldIntersectWalls(int d, Character c) {
 		double x = moveBox.getMinX();
 		double y = moveBox.getMinY();
+		
+		Rectangle[] r = {new Rectangle((int) x, (int) (y - SPEED), Main.getTilesize(), Main.getTilesize()), 
+				new Rectangle((int) x, (int) (y + SPEED), Main.getTilesize(), Main.getTilesize()),
+				new Rectangle((int) (x - SPEED), (int) y, Main.getTilesize(), Main.getTilesize()),
+				new Rectangle((int) (x + SPEED), (int) y, Main.getTilesize(), Main.getTilesize())
+		};
 
-		Rectangle ru = new Rectangle((int) x, (int) (y - SPEED), Main.getTilesize(), Main.getTilesize());
-		Rectangle rd = new Rectangle((int) x, (int) (y + SPEED), Main.getTilesize(), Main.getTilesize());
-		Rectangle rl = new Rectangle((int) (x - SPEED), (int) y, Main.getTilesize(), Main.getTilesize());
-		Rectangle rr = new Rectangle((int) (x + SPEED), (int) y, Main.getTilesize(), Main.getTilesize());
-
-		for (int i = 0; i < Game.walls.length; i++) {
-			if (ru.intersects(Game.walls[i]) && d == UP)
-				return true;
-			if (rd.intersects(Game.walls[i]) && d == DOWN)
-				return true;
-			if (rl.intersects(Game.walls[i]) && d == LEFT)
-				return true;
-			if (rr.intersects(Game.walls[i]) && d == RIGHT)
-				return true;
-		}
 		boolean ghost = false;
 		for(int i = 0; i < 4; i++){
-			if (c == Game.getGhosts()[i])
+			if (c == Game.getGhosts()[i]){
 				ghost = true;
+				break;
+			}
 		}
-		if (!ghost){
+		
+		for (int i = 0; i < Game.walls.length; i++) {
+			for (int j = 0; j < r.length; j++){
+				if (r[j].intersects(Game.walls[i]) && d == j){
+					return true;
+				}
+			}
+		}
+		
+		if (!ghost || ghost && !c.canGhosthouse){
 			for (int i = 0; i < Game.semiWalls.length; i++){
-				if (!dead && rd.intersects(Game.semiWalls[i]) && d == DOWN)
+				if (!dead && r[1].intersects(Game.semiWalls[i]) && d == DOWN)
 					return true;
 			}
 		}
