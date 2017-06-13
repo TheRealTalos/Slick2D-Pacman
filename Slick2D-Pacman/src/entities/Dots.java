@@ -4,12 +4,15 @@ import java.awt.Rectangle;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 
 import main.Main;
 import states.Game;
 import utils.HUD;
 
 public class Dots {
+	
+	private Sound eatSound;
 	
 	public static Image[][] dots = new Image[Main.getWorldsize()][Main.getWorldsize()];
 	private static Rectangle[][] dotsRec = new Rectangle[Main.getWorldsize() / Main.getTilesize()][Main.getWorldsize() / Main.getTilesize()];
@@ -34,6 +37,11 @@ public class Dots {
 				}
 			}
 		}
+		try{
+			eatSound = new Sound("/res/sounds/EatingDots.ogg");
+		}catch (SlickException e){
+			e.printStackTrace();
+		}
 	}
 	
 	public void render(){
@@ -51,6 +59,7 @@ public class Dots {
 				if (dotsRec[x][y] != null && Game.getPlayer().getMoveBox().intersects(dotsRec[x][y])){
 					dots[x][y] = null;
 					dotsRec[x][y] = null;
+					if (!eatSound.playing()) eatSound.play();
 					HUD.score += 10;
 					if (HUD.score > Main.highscore) Main.highscore = HUD.score;
 					Game.getPlayer().dotsEaten++;
@@ -58,6 +67,7 @@ public class Dots {
 				if (bigDotsRec[x][y] != null && Game.getPlayer().getMoveBox().intersects(bigDotsRec[x][y])){
 					bigDots[x][y] = null;
 					bigDotsRec[x][y] = null;
+					if (!eatSound.playing()) eatSound.play();
 					Game.getPlayer().dotsEaten++;
 					HUD.score += 50;
 					if (HUD.score > Main.highscore) Main.highscore = HUD.score;

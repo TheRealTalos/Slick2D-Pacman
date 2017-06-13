@@ -11,6 +11,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.geom.Shape;
@@ -22,10 +23,9 @@ import utils.HUD;
 
 public class Player extends Character {
 	
-	private Sound eatSound = new Sound(null);
-	private Sound scaredEatSound = new Sound(null);
-	private Sound moveSound = new Sound(null);
-	private Sound deathSound = new Sound(null);
+	private Sound scaredMoveSound;
+	private Sound moveSound;
+	private Sound deathSound;
 	
 	private static final int IDLE = 4;
 
@@ -68,6 +68,15 @@ public class Player extends Character {
 		dir = NULL;
 
 		initAnim();
+		
+		try{
+			moveSound = new Sound("/res/sounds/Moving.ogg");
+			scaredMoveSound = new Sound("/res/sounds/ScaredMoving.ogg");
+			deathSound = new Sound("/res/sounds/PacDeath.ogg");
+			
+		}catch (SlickException e){
+			e.printStackTrace();
+		}
 		
 		curAnim = anim[8];
 
@@ -121,7 +130,22 @@ public class Player extends Character {
 							x -= speed;
 						if (dir == RIGHT)
 							x += speed;
+						boolean scared = false;
+						for (int j = 0; j < Game.getGhosts().length; j++){
+							if (Game.getGhosts()[i].getMode() == Ghost.SCARED)
+								scared = true;
+						}
+						if (scared) {
+							if (!scaredMoveSound.playing())
+								scaredMoveSound.play();
+						}else {
+							if (!moveSound.playing())
+								moveSound.play();
+						}
 					} else {
+						if (moveSound.playing()){
+							moveSound.stop();
+						}
 						curAnim = anim[IDLE + i];
 						dir = NULL;
 					}
@@ -195,6 +219,7 @@ public class Player extends Character {
 	}
 
 	private void die() {
+		if (!deathSound.playing()) deathSound.play();
 		curAnim = anim[9];
 		if (Game.getTimer().getTime() >= deadTime) {
 			dead = true;

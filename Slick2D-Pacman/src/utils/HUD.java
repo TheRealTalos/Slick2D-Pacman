@@ -31,13 +31,18 @@ public class HUD {
 	public static UnicodeFont blueFont;
 	public static UnicodeFont yellowFont;
 	
-	private Sound readySound = new Sound(null);
+	private Sound readySound;
 	
 	public HUD() {
 
 	}
 
 	public void init() {
+		try{
+			readySound = new Sound("/res/sounds/Ready.ogg");
+		}catch (SlickException e){
+			e.printStackTrace();
+		}
 		score = 0;
 		whiteFont = createFont(18, Color.WHITE);
 		blueFont = createFont(12, Color.BLUE);
@@ -47,12 +52,11 @@ public class HUD {
 		for (int i = 0; i < 2; i++){
 			lives.add(Game.getSheet().getSprite(5, 0));
 		}
-		
 	}
 	
 	public void restart(){
-		readySound.play();
 		draw(125, 173, "Ready!", 2, yellowFont);
+		if (!readySound.playing()) readySound.play();
 	}
 
 	public void render(Graphics g) {

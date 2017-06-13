@@ -9,6 +9,7 @@ import java.util.Collections;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 
 import main.Main;
@@ -37,7 +38,8 @@ public class Ghost extends Character {
 	private int scatterPointY = 0;
 	private int releaseDots = 0;
 	
-	private Sound deathSound = new Sound(null);
+	private Sound diedSound;
+	private Sound deadSound;
 
 	private static int endPaused = 0;
 	private int endScared = 0;
@@ -59,6 +61,13 @@ public class Ghost extends Character {
 	public void init() {
 		initGhosts();
 		initAnim();
+		
+		try{
+			diedSound = new Sound("/res/sounds/GhostDeath.ogg");
+			deadSound = new Sound("/res/sounds/GhostDead.ogg");
+		}catch (SlickException e){
+			e.printStackTrace();
+		}
 
 		paused = false;
 		endPaused = 0;
@@ -241,6 +250,7 @@ public class Ghost extends Character {
 						move(SCAREDSPEED);
 
 					} else if (mode == DEAD) {
+						if (!deadSound.playing()) deadSound.play();
 						curAnim = anim[i + DEAD];
 						move(DEADSPEED);
 
@@ -353,6 +363,7 @@ public class Ghost extends Character {
 	}
 
 	public void die() {
+		if (!diedSound.playing()) diedSound.play();
 		paused = true;
 		endPaused = (int) (Game.getTimer().getTime() + pauseTime);
 		setMode(DEAD);
