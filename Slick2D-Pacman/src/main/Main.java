@@ -39,7 +39,6 @@ public class Main extends StateBasedGame{
 	really fast bing- when opening and closing mouth in scared mode
 	ding ding - when ghosts die and are eyes
 	death souund - when pac dies 
-	 
 	 */
 
 	private static final int SCALE = 2;

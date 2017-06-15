@@ -12,7 +12,12 @@ public class Menu extends BasicGameState{
 	
 	private int STATE;
 	
-	private static Image menu;
+	private static Image play;
+	private static Image playAgain;
+	private static Image tutorial;
+	
+	private static boolean playAgainn = false;
+	private static boolean tutoriall = false;
 	
 	public Menu(int state){
 		STATE = state;
@@ -20,14 +25,20 @@ public class Menu extends BasicGameState{
 
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		menu = new Image("res/maps/menu.png");
-		
+		play = new Image("res/maps/Menu.png");
+		playAgain = new Image("res/maps/PlayAgain.png");
+		tutorial = new Image("res/maps/Guide.png");
 	}
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
-		
-		menu.draw();
+		if (tutoriall){
+			tutorial.draw();
+		}else if (playAgainn){
+			playAgain.draw();
+		}else {
+			play.draw();
+		}
 		
 	}
 

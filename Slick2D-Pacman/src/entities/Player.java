@@ -56,18 +56,10 @@ public class Player extends Character {
 	}
 	
 	public void init() {
-		dead = false;
-		deading = false;
-		gotDeaded = false;
-
-		dotsEaten = 0;
-		
-		x = 10 * Main.getTilesize();
-		y = 15 * Main.getTilesize();
-
-		dir = NULL;
-
 		initAnim();
+		restart();
+		
+		dotsEaten = 0;
 		
 		try{
 			moveSound = new Sound("/res/sounds/Moving.ogg");
