@@ -24,6 +24,8 @@ public class HUD {
 	private int drawX;
 	private int drawY;
 	
+	private boolean first;
+	
 	private List<TextObject> texts = new ArrayList<TextObject>();
 	private static List<Image> lives = new ArrayList<Image>();
 	
@@ -56,12 +58,17 @@ public class HUD {
 	
 	public void restart(){
 		draw(125, 173, "Ready!", 2, yellowFont);
-		if (!readySound.playing()) readySound.play();
+		first = true;
 	}
 
 	public void render(Graphics g) {
 		whiteFont.drawString(20, 330, Integer.toString(score));
 		whiteFont.drawString(140, 330, "HIGH " + Integer.toString(Main.highscore));
+		
+		if (!readySound.playing() && first) {
+			readySound.play();
+			first = false;
+		}
 		
 		for (int i = 0; i < texts.size(); i++){
 			texts.get(i).getFont().drawString(texts.get(i).getX(), texts.get(i).getY(), texts.get(i).getText());

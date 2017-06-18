@@ -124,8 +124,10 @@ public class Game extends BasicGameState {
 			dots.update();
 			timer.update();
 		}else {
-			Main.setHighscore();
+			if (Main.origHighscore > Main.highscore) Main.setHighscore();
 			gameOver = false;
+			Menu.playAgain = true;
+			Menu.tutorial = false;
 			Player.speed = 1f;
 			player.setDeaths(0);
 			hud.init();

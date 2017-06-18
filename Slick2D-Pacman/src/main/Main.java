@@ -53,7 +53,7 @@ public class Main extends StateBasedGame{
 	private static final int GAME = 1;
 	
 	public static int highscore = 0;
-	private static int origHighscore = 0;
+	public static int origHighscore = 0;
 	
 	private static FileReader fileReader;
 	
@@ -92,13 +92,11 @@ public class Main extends StateBasedGame{
 	}
 	
 	public static void setHighscore(){
-		if (origHighscore < highscore){
-			try (BufferedWriter bw = new BufferedWriter(new FileWriter("res/HIGH.txt"))) {
-				bw.write(Integer.toString(highscore));
-	
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter("res/HIGH.txt"))) {
+			bw.write(Integer.toString(highscore));
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

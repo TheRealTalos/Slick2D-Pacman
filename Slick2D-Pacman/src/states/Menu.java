@@ -8,16 +8,18 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import main.Main;
+
 public class Menu extends BasicGameState{
 	
 	private int STATE;
 	
-	private static Image play;
-	private static Image playAgain;
-	private static Image tutorial;
+	private static Image playImage;
+	private static Image playAgainImage;
+	private static Image tutorialImage;
 	
-	private static boolean playAgainn = false;
-	private static boolean tutoriall = false;
+	public static boolean playAgain = false;
+	public static boolean tutorial = false;
 	
 	public Menu(int state){
 		STATE = state;
@@ -25,19 +27,19 @@ public class Menu extends BasicGameState{
 
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		play = new Image("res/maps/Menu.png");
-		playAgain = new Image("res/maps/PlayAgain.png");
-		tutorial = new Image("res/maps/Guide.png");
+		playImage = new Image("res/maps/Menu.png");
+		playAgainImage = new Image("res/maps/PlayAgain.png");
+		tutorialImage = new Image("res/maps/Guide.png");
 	}
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
-		if (tutoriall){
-			tutorial.draw();
-		}else if (playAgainn){
-			playAgain.draw();
+		if (tutorial){
+			tutorialImage.draw();
+		}else if (playAgain){
+			playAgainImage.draw();
 		}else {
-			play.draw();
+			playImage.draw();
 		}
 		
 	}
@@ -47,7 +49,18 @@ public class Menu extends BasicGameState{
 		Input input = gc.getInput();
 		
 		if (input.isMousePressed(0)){
-			sbg.enterState(1);
+			if (input.getMouseY() > Main.getWorldsize() && !tutorial){
+				if (input.getMouseX() > Main.getWorldsize()/2){
+					Main.highscore = 0;
+					Main.setHighscore();
+				}else {
+					tutorial = true;
+				}
+			}else if (tutorial){
+				tutorial = false;
+			}else {
+				sbg.enterState(1);
+			}
 		}
 		
 	}
