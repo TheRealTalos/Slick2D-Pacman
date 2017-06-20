@@ -1,21 +1,16 @@
 package entities;
 
 import java.awt.Rectangle;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Animation;
-import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
-import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.geom.Shape;
-import org.newdawn.slick.geom.Transform;
 
 import main.Main;
 import states.Game;
@@ -199,8 +194,6 @@ public class Player extends Character {
 			deadTime = Game.getTimer().getTime() + 0.55;
 		gotDeaded = true;
 	}
-	
-	
 
 	public void setDotsEaten(int dotsEaten) {
 		this.dotsEaten = dotsEaten;

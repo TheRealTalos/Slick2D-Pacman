@@ -1,7 +1,6 @@
 package utils;
 
 public class Timer {
-	
 	private double time;
 	private double timeFraction;
 	

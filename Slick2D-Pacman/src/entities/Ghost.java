@@ -2,7 +2,6 @@ package entities;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,8 +88,6 @@ public class Ghost extends Character {
 			List<Double> sortedDists = new ArrayList<Double>();
 
 			if (mode == LEAVE) {
-				List<Integer> p = wouldNotIntersectWalls(this);
-
 				setDists(10 * Main.getTilesize(), 7 * Main.getTilesize());
 				if (y <= 7 * Main.getTilesize()) {
 					setMode();

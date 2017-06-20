@@ -20,10 +20,7 @@ import states.Game;
 
 public class HUD {
 	public static int score;
-	
-	private int drawX;
-	private int drawY;
-	
+
 	private boolean first;
 	
 	private List<TextObject> texts = new ArrayList<TextObject>();
@@ -32,6 +29,8 @@ public class HUD {
 	public static UnicodeFont whiteFont;
 	public static UnicodeFont blueFont;
 	public static UnicodeFont yellowFont;
+	public static UnicodeFont blackFont;
+	
 	
 	private Sound readySound;
 	
@@ -39,16 +38,13 @@ public class HUD {
 
 	}
 
-	public void init() {
+	public void gameInit(){
 		try{
 			readySound = new Sound("/res/sounds/Ready.ogg");
 		}catch (SlickException e){
 			e.printStackTrace();
 		}
 		score = 0;
-		whiteFont = createFont(18, Color.WHITE);
-		blueFont = createFont(12, Color.BLUE);
-		yellowFont = createFont(15, Color.YELLOW);
 		restart();
 		
 		for (int i = 0; i < 2; i++){
@@ -56,14 +52,22 @@ public class HUD {
 		}
 	}
 	
+	public void menuInit() {
+		whiteFont = createFont(18, Color.WHITE);
+		blueFont = createFont(12, Color.CYAN);
+		yellowFont = createFont(15, Color.YELLOW);
+		blackFont = createFont(18, Color.BLACK);
+	}
+	
 	public void restart(){
 		draw(125, 173, "Ready!", 2, yellowFont);
 		first = true;
 	}
 
-	public void render(Graphics g) {
+	public void gameRender(Graphics g) {
 		whiteFont.drawString(20, 330, Integer.toString(score));
 		whiteFont.drawString(140, 330, "HIGH " + Integer.toString(Main.highscore));
+		whiteFont.drawString(140, 370, "LVL " + Integer.toString(Game.level));
 		
 		if (!readySound.playing() && first) {
 			readySound.play();
@@ -81,6 +85,10 @@ public class HUD {
 		}
 	}
 	
+	public void menuRender(){
+		blackFont.drawString(0, 0, "HIGH " + Integer.toString(Main.highscore));
+	}
+	
 	public void removeLife(){
 		lives.remove(lives.size()-1);
 	}
@@ -89,6 +97,7 @@ public class HUD {
 		texts.add(new TextObject(x, y, text, displayTime, font));
 	}
 	
+	@SuppressWarnings("unchecked")
 	private UnicodeFont createFont(int size, Color colour){
 		UnicodeFont font = null;
 		try{ 

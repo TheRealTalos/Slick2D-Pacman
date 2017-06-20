@@ -1,48 +1,18 @@
 package main;
 
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.newdawn.slick.*;
-import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.tiled.TiledMap;
-import org.newdawn.slick.util.ResourceLoader;
 
 import states.Game;
 import states.Menu;
 
 public class Main extends StateBasedGame{
-	
-	// MAKE SCALABLE GAME
-	// MESS WITH SETTINGS
-	// ADD HIGH SCORE
-	
-	/*
-	Make menu look nice
-	different menu when gameovered
-	show highscore on menu
-	add menu buttons: reset highscore, quit??
-	 * 
-	start sound
-	wakka wakka - when eating in chase/scatter
-	alarm sound - when opening and closing mouth in chase/scatter
-	really fast bing- when opening and closing mouth in scared mode
-	ding ding - when ghosts die and are eyes
-	death souund - when pac dies 
-	 */
-
-	private static final int SCALE = 2;
-
 	private static final int WINDOWWIDTH = 336;
 	private static final int WINDOWHEIGHT = 400;
 
@@ -54,8 +24,6 @@ public class Main extends StateBasedGame{
 	
 	public static int highscore = 0;
 	public static int origHighscore = 0;
-	
-	private static FileReader fileReader;
 	
 	public static BufferedReader reader;
 	public static BufferedWriter writer;
@@ -83,6 +51,7 @@ public class Main extends StateBasedGame{
 			AppGameContainer app = new AppGameContainer(new Main());
 			app.setDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, false);
 			app.setTargetFrameRate(60);
+			app.setShowFPS(false);
 			app.start();
 			
 		}catch(SlickException e){

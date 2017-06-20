@@ -1,8 +1,6 @@
 package states;
 
-import java.awt.Font;
 import java.awt.Rectangle;
-import java.util.HashMap;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -12,7 +10,6 @@ import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
-import org.newdawn.slick.util.ResourceLoader;
 
 import entities.Dots;
 import entities.Ghost;
@@ -23,11 +20,6 @@ import utils.Timer;
 
 public class Game extends BasicGameState {
 	private int state;
-	
-	private static final int RED = 0;;
-	private static final int PINK = 1;
-	private static final int BLUE = 2;
-	private static final int ORANGE = 3;
 	
 	public static final int NUMLIVES = 3;
 
@@ -42,6 +34,8 @@ public class Game extends BasicGameState {
 	public static Rectangle[] semiWalls = new Rectangle[1];
 	
 	private static Timer timer = new Timer();
+	
+	public static int level = 1;
 	
 	private static boolean gameOver = false;
 	
@@ -61,7 +55,7 @@ public class Game extends BasicGameState {
 			ghosts[i].init();
 		}
 		dots.init();
-		hud.init();
+		hud.gameInit();
 		timer.init();
 	
 		int w = 0;
@@ -91,7 +85,7 @@ public class Game extends BasicGameState {
 		for (int i = 0; i < ghosts.length; i++){
 			ghosts[i].render();
 		}
-		hud.render(g);
+		hud.gameRender(g);
 	}
 
 	@Override
@@ -125,18 +119,20 @@ public class Game extends BasicGameState {
 			timer.update();
 		}else {
 			if (Main.origHighscore > Main.highscore) Main.setHighscore();
+			level = 1;
 			gameOver = false;
 			Menu.playAgain = true;
 			Menu.tutorial = false;
 			Player.speed = 1f;
 			player.setDeaths(0);
-			hud.init();
+			hud.gameInit();
 			player.setDotsEaten(0);
 			restart();
 			sbg.enterState(0);
 		}
 		if (player.dotsEaten == 150){
 			if (Player.speed > 0.8f) Player.speed -= 0.02f;
+			level++;
 			hud.restart();
 			restart();
 		}

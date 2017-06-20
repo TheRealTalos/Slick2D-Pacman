@@ -9,6 +9,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import main.Main;
+import utils.HUD;
 
 public class Menu extends BasicGameState{
 	
@@ -21,6 +22,8 @@ public class Menu extends BasicGameState{
 	public static boolean playAgain = false;
 	public static boolean tutorial = false;
 	
+	private HUD hud = new HUD();
+	
 	public Menu(int state){
 		STATE = state;
 	}
@@ -30,6 +33,7 @@ public class Menu extends BasicGameState{
 		playImage = new Image("res/maps/Menu.png");
 		playAgainImage = new Image("res/maps/PlayAgain.png");
 		tutorialImage = new Image("res/maps/Guide.png");
+		hud.menuInit();
 	}
 
 	@Override
@@ -38,10 +42,11 @@ public class Menu extends BasicGameState{
 			tutorialImage.draw();
 		}else if (playAgain){
 			playAgainImage.draw();
+			hud.menuRender();
 		}else {
 			playImage.draw();
+			hud.menuRender();
 		}
-		
 	}
 
 	@Override

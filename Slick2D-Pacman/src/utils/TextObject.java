@@ -1,16 +1,14 @@
 package utils;
 
-import java.awt.Color;
-
 import org.newdawn.slick.UnicodeFont;
 
 public class TextObject {
 	
-	private static int x;
-	private static int y;
-	private static String text;
-	private static int displayTime;
-	private static UnicodeFont font;
+	private int x;
+	private int y;
+	private String text;
+	private int displayTime;
+	private UnicodeFont font;
 
 	public TextObject(int x, int y, String text, int displayTime, UnicodeFont font) {
 		this.x = x;
@@ -20,23 +18,23 @@ public class TextObject {
 		this.font = font;
 	}
 
-	public static int getX() {
+	public int getX() {
 		return x;
 	}
 
-	public static int getY() {
+	public int getY() {
 		return y;
 	}
 
-	public static String getText() {
+	public String getText() {
 		return text;
 	}
 
-	public static int getDisplayTime() {
+	public int getDisplayTime() {
 		return displayTime;
 	}
 
-	public static UnicodeFont getFont() {
+	public UnicodeFont getFont() {
 		return font;
 	}
 	
